@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.notemvvm"
-        minSdk = 34
+        minSdk = 33
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -20,6 +20,7 @@ android {
     }
     buildFeatures{
         dataBinding = true
+        viewBinding = true
     }
 
     buildTypes {
@@ -35,12 +36,21 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
+    packaging {
+        resources.excludes.add("META-INF/atomicfu.kotlin_module")
+    }
+
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+
 }
 
 dependencies {
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation("androidx.legacy:legacy-support-v4:1.0.0")
     val activity_version = "1.8.0"
     val appcompat_version = "1.6.1"
     val fragment_version = "1.6.1"
@@ -71,13 +81,15 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview-selection:1.1.0")
     implementation("androidx.room:room-runtime:$room_version")
     annotationProcessor("androidx.room:room-compiler:$room_version")
-
-    // To use Kotlin Symbol Processing (KSP)
     kapt("androidx.room:room-compiler:$room_version")
 
     // optional - Kotlin Extensions and Coroutines support for Room
     implementation("androidx.room:room-ktx:$room_version")
-    implementation("com.google.android.material:material:1.10.0")
+    implementation("com.google.android.material:material:1.9.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
+    implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
+
+
 
 
 
