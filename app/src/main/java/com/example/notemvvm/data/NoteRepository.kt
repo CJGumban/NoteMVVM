@@ -1,14 +1,8 @@
 package com.example.notemvvm.data
 
 import androidx.annotation.WorkerThread
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 
-import com.example.notemvvm.data.Note
-import com.example.notemvvm.data.NoteDao
-import com.example.notemvvm.ui.main.HomeViewModel
 import kotlinx.coroutines.flow.Flow
-import java.lang.IllegalArgumentException
 
 
 //Declares the DAO as a private property in the constructor. Pass in the DAO

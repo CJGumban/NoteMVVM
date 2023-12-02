@@ -17,7 +17,7 @@ interface NoteDao {
     @Query("SELECT * FROM note_table WHERE label == :label  ORDER BY timestamp ASC")
     fun getNotesByLabel(label: String): Flow<List<Note>>
 
-    @Query("SELECT * FROM note_table WHERE content LIKE :search " + "OR title LIKE :search ORDER BY timestamp ASC")
+    @Query("SELECT * FROM note_table WHERE content LIKE '%' || :search || '%' " + "OR title LIKE '%' || :search || '%' ORDER BY timestamp ASC")
     fun searchNotes(search: String): Flow<List<Note>>
 
 

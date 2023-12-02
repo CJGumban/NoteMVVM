@@ -19,7 +19,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildFeatures{
-        dataBinding = true
+
         viewBinding = true
     }
 
@@ -51,11 +51,11 @@ android {
 dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
-    val activity_version = "1.8.0"
+    val activity_version = "1.8.1"
     val appcompat_version = "1.6.1"
-    val fragment_version = "1.6.1"
+    val fragment_version = "1.6.2"
     val lifecycle_version = "2.6.2"
-    val nav_version = "2.7.4"
+    val nav_version = "2.7.5"
     val paging_version = "3.2.1"
     val room_version = "2.6.0"
 
@@ -76,6 +76,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version")
     implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
     implementation("androidx.navigation:navigation-ui-ktx:$nav_version")
+//    implementation("androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version")
     implementation("androidx.paging:paging-runtime-ktx:$paging_version")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation("androidx.recyclerview:recyclerview-selection:1.1.0")
@@ -85,9 +86,9 @@ dependencies {
 
     // optional - Kotlin Extensions and Coroutines support for Room
     implementation("androidx.room:room-ktx:$room_version")
-    implementation("com.google.android.material:material:1.9.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
-    implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
+    implementation("com.google.android.material:material:1.10.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("androidx.coordinatorlayout:coordinatorlayout:1.3.0-alpha01")
 
 
 

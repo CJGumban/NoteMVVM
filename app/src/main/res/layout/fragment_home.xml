@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.constraintlayout.widget.ConstraintLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/homeFragment"
     tools:context=".ui.main.HomeFragment"
-    android:theme="@style/AppTheme"
     android:layout_height="match_parent"
-    android:layout_width="match_parent">
+    android:layout_width="match_parent"
+    >
 
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     android:layout_width="match_parent"
@@ -16,63 +16,69 @@
 
     <!--Nestedscrolling child
         for recycler view of list of notes-->
-
     <androidx.core.widget.NestedScrollView
+        android:paddingTop="80dp"
+        android:id="@+id/home_nested_scrollview"
+        android:paddingHorizontal="4dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipChildren="true"
-        android:clipToPadding="false"
-        app:layout_anchor="@id/app_bar_layout"
-        app:layout_behavior="com.google.android.material.search.SearchBar$ScrollingViewBehavior">
+        app:layout_behavior="@string/searchbar_scrolling_view_behavior"
+        >
 
         <androidx.recyclerview.widget.RecyclerView
+
             android:id="@+id/notes_recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            />
     </androidx.core.widget.NestedScrollView>
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/app_bar_layout"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.search.SearchBar
+
+            android:id="@+id/search_bar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <com.google.android.material.search.SearchBar
-                android:id="@+id/search_bar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="hint"
-                app:hideNavigationIcon="false"
-                app:navigationIcon="@drawable/menu_24px"/>
-
-
+            android:layout_height="wrap_content"
+            android:hint="Search Notes"
+            app:hideNavigationIcon="false"
+            app:navigationIcon="@drawable/menu_24px"
+            />
     </com.google.android.material.appbar.AppBarLayout>
 
+    <com.google.android.material.search.SearchView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/notes_searchview"
+        app:layout_anchor="@+id/search_bar">
 
-
-
-
-        <com.google.android.material.search.SearchView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:hint="hint">
-
-
-<!--
             <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:layout_behavior="@string/searchbar_scrolling_view_behavior">
+                android:id="@+id/searchview_scrollbar"
 
+                >
 
-
+                <androidx.recyclerview.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/notes_searchview_recyclerview"/>
             </androidx.core.widget.NestedScrollView>
--->
-        </com.google.android.material.search.SearchView>
+
+    </com.google.android.material.search.SearchView>
 
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/add_notes_fab"
 
-
-
+        android:layout_gravity="bottom|end"
+        android:src="@drawable/edit_24px"
+        android:layout_margin="16dp"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

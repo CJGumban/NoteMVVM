@@ -4,14 +4,13 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.example.notemvvm.data.NoteRepository
 import com.example.notemvvm.data.Note
 import com.example.notemvvm.data.NoteDao
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.lang.IllegalArgumentException
 
-class HomeViewModel(private val repository: NoteDao) : ViewModel() {
+class AppViewModel(private val repository: NoteDao) : ViewModel() {
 
 
 //    Using LiveData and caching what  allNotes return has several benefits:
@@ -21,6 +20,9 @@ class HomeViewModel(private val repository: NoteDao) : ViewModel() {
 
     val allNotes: Flow<List<Note>> = repository.allNotes()
 
+    fun searchNotesByText(search:String): Flow<List<Note>> {
+        return searchNotes(search)
+    }
     public fun addNote(note: Note){
         insert(note)
     }
@@ -45,13 +47,13 @@ class HomeViewModel(private val repository: NoteDao) : ViewModel() {
 
 
 
-    class HomeViewModelFactory(
+    class AppViewModelFactory(
         private val noteDao: NoteDao
     ) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
+            if (modelClass.isAssignableFrom(AppViewModel::class.java)) {
                 @Suppress("UNCHECKED_CAST")
-                return HomeViewModel(noteDao) as T
+                return AppViewModel(noteDao) as T
             }
             throw IllegalArgumentException("Unknown ViewModel class")
         }

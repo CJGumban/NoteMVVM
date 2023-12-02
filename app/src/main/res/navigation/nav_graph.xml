@@ -9,5 +9,14 @@
         android:id="@+id/homeFragment"
         android:name="com.example.notemvvm.ui.main.HomeFragment"
         android:label="fragment_main"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_addEditNoteFragment"
+            app:destination="@id/addEditNoteFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addEditNoteFragment"
+        android:name="com.example.notemvvm.ui.main.AddEditNoteFragment"
+        android:label="fragment_add_edit_note"
+        tools:layout="@layout/fragment_add_edit_note" />
 </navigation>
