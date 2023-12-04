@@ -1,11 +1,16 @@
+
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.kapt")
+    id("androidx.navigation.safeargs.kotlin")
+
 
 }
 
 android {
+
     namespace = "com.example.notemvvm"
     compileSdk = 34
 
@@ -76,7 +81,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version")
     implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
     implementation("androidx.navigation:navigation-ui-ktx:$nav_version")
-//    implementation("androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version")
+  //  implementation("androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version")
     implementation("androidx.paging:paging-runtime-ktx:$paging_version")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation("androidx.recyclerview:recyclerview-selection:1.1.0")

@@ -103,28 +103,18 @@ class HomeFragment : Fragment() {
         actionMode?.title = "1 selected"*/
         showNotes()
         binding.homeNestedScrollview.setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
-                searchBar.expand(searchBar,binding.appBarLayout,true)
-        }
+                searchBar.collapse(searchBar,binding.appBarLayout,true)
+            binding.searchviewScrollbar.scrollY = 0
+            searchBar.visibility=View.VISIBLE
 
-        searchBar.setNavigationOnClickListener {
-            Log.i("codelog_homefragment","searchBarnav clicked")
         }
-
-        searchBar.setOnClickListener {
-            Log.i("codelog_homefragment","searchBar clicked")
-        }
-
         searchView.editText.addTextChangedListener{
             loadSearchNotes(it.toString())
         }
-
         addNotes.setOnClickListener {
-
-            
             view.findNavController().navigate(R.id.action_homeFragment_to_addEditNoteFragment)
+
         }
-
-
         binding.searchBar.setOnClickListener {
             Log.i("codelog_homefragment","searchBar clicked")
         }
@@ -133,10 +123,19 @@ class HomeFragment : Fragment() {
                 searchView.clearFocusAndHideKeyboard()
                 searchView.editText.clearFocus()
             }
-            searchBar.expand(searchBar,binding.appBarLayout,true)
+            binding.homeNestedScrollview.scrollY = 0
+            searchBar.collapse(searchBar,binding.appBarLayout,true)
 
         }
-
+        searchView.setOnFocusChangeListener { v, hasFocus ->
+            if (!hasFocus){
+                binding.addNotesFab.visibility=View.VISIBLE
+                binding.homeNestedScrollview.scrollY = 0
+            } else {
+                binding.addNotesFab.visibility=View.INVISIBLE
+                binding.notesSearchview.scrollY = 0
+            }
+        }
     }
 
 
@@ -151,12 +150,6 @@ class HomeFragment : Fragment() {
                 Log.i("homefragment", it.toString())
                 noteSearchAdapter = NoteSearchAdapter(notes)
                 recyclerViewSearch.adapter = noteSearchAdapter
-                binding.searchviewScrollbar.scrollTo(0,0)
-                binding.homeNestedScrollview.scrollTo(0,0)
-                binding.searchBar.expand(binding.searchBar,binding.appBarLayout,false)
-
-
-
             }
         }
 

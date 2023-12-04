@@ -3,15 +3,24 @@ package com.example.notemvvm.data
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.time.DateTimeException
 
 
 @Entity(tableName = "note_table")
 data class Note(
-    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") val id: Int = 0,
-    @ColumnInfo(name = "title") val title: String,
-    @ColumnInfo(name = "content") val content: String,
-    @ColumnInfo(name = "timestamp") val timestamp: Long,
-    @ColumnInfo(name = "label") val label: String,
-    @ColumnInfo(name = "pinned") val pinned:Boolean
-)
+    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") var id:Int,
+    @ColumnInfo(name = "title") var title: String,
+    @ColumnInfo(name = "body") var body: String,
+    @ColumnInfo(name = "timestamp") var timestamp: Long,
+    @ColumnInfo(name = "label") var label: String?,
+    @ColumnInfo(name = "pinned") var pinned:Boolean
+){
+    constructor(title: String,body: String,timestamp: Long,label: String?,pinned:Boolean) : this(0, title, body, timestamp, label, pinned) {
+        this.title = title
+        this.body = body
+        this.timestamp = timestamp
+        this.label = label
+        this.pinned = pinned
+
+
+    }
+}

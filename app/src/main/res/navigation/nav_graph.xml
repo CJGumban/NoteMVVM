@@ -12,11 +12,21 @@
         tools:layout="@layout/fragment_home" >
         <action
             android:id="@+id/action_homeFragment_to_addEditNoteFragment"
-            app:destination="@id/addEditNoteFragment" />
+            app:destination="@id/addEditNoteFragment" >
+
+        </action>
     </fragment>
     <fragment
         android:id="@+id/addEditNoteFragment"
         android:name="com.example.notemvvm.ui.main.AddEditNoteFragment"
         android:label="fragment_add_edit_note"
-        tools:layout="@layout/fragment_add_edit_note" />
+        tools:layout="@layout/fragment_add_edit_note" >
+        <action
+            android:id="@+id/action_addEditNoteFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+        <argument
+            android:name="note_id"
+            app:argType="integer"
+            android:defaultValue="0" />
+    </fragment>
 </navigation>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout
+<androidx.appcompat.widget.LinearLayoutCompat
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -12,21 +12,23 @@
 
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    android:layout_height="match_parent">
 
     <!--Nestedscrolling child
         for recycler view of list of notes-->
+
     <androidx.core.widget.NestedScrollView
-        android:paddingTop="80dp"
+
         android:id="@+id/home_nested_scrollview"
         android:paddingHorizontal="4dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/searchbar_scrolling_view_behavior"
+        android:clipToPadding="false"
+        app:layout_behavior="com.google.android.material.search.SearchBar$ScrollingViewBehavior"
         >
 
         <androidx.recyclerview.widget.RecyclerView
-
+            android:paddingTop="84dp"
             android:id="@+id/notes_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -34,19 +36,20 @@
     </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.appbar.AppBarLayout
+
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        >
 
         <com.google.android.material.search.SearchBar
-
             android:id="@+id/search_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Search Notes"
             app:hideNavigationIcon="false"
             app:navigationIcon="@drawable/menu_24px"
-            />
+            app:layout_scrollFlags="snap"/>
     </com.google.android.material.appbar.AppBarLayout>
 
     <com.google.android.material.search.SearchView
@@ -81,4 +84,4 @@
         android:layout_margin="16dp"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-</FrameLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>

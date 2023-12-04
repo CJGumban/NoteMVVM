@@ -27,6 +27,11 @@ class AppViewModel(private val repository: NoteDao) : ViewModel() {
         insert(note)
     }
 
+    fun getNoteById(noteId: Int): Flow<Note> {
+        return _getNoteById(noteId)
+    }
+
+    private fun _getNoteById(noteId: Int): Flow<Note> = repository.getNoteById(noteId)
 
     private fun getNotesByLabel(label: String): Flow<List<Note>> = repository.getNotesByLabel(label)
     private fun searchNotes(search: String): Flow<List<Note>> = repository.searchNotes(search)
