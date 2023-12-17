@@ -8,11 +8,13 @@
     tools:context=".ui.main.HomeFragment"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
+    android:theme="@style/AppTheme"
     >
 
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_gravity="top">
 
     <!--Nestedscrolling child
         for recycler view of list of notes-->
@@ -26,13 +28,18 @@
         android:clipToPadding="false"
         app:layout_behavior="com.google.android.material.search.SearchBar$ScrollingViewBehavior"
         >
-
-        <androidx.recyclerview.widget.RecyclerView
+<!--        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/pinned_notes_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:paddingTop="84dp"
+            android:visibility="visible" />-->
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/notes_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            />
+            android:paddingTop="84dp"
+            android:visibility="visible" />
     </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.appbar.AppBarLayout
@@ -62,7 +69,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/searchview_scrollbar"
-
+                android:paddingHorizontal="4dp"
                 >
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -81,7 +88,8 @@
 
         android:layout_gravity="bottom|end"
         android:src="@drawable/edit_24px"
-        android:layout_margin="16dp"/>
+        android:layout_margin="16dp"
+        android:contentDescription="Add new note" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </androidx.appcompat.widget.LinearLayoutCompat>

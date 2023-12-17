@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.util.Log
 import android.view.ActionMode
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.addTextChangedListener
@@ -24,7 +26,8 @@ import kotlinx.coroutines.launch
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
-    private lateinit var recyclerViewHome: RecyclerView
+    private lateinit var recyclerViewNotes: RecyclerView
+ //   private lateinit var recyclerViewPinnedNotes: RecyclerView
     private lateinit var recyclerViewSearch: RecyclerView
     private var notes:List<Note> = mutableListOf()
     private var noteAdapter = NoteAdapter(notes)
@@ -57,12 +60,13 @@ class HomeFragment : Fragment() {
         val searchView = binding.notesSearchview
         var actionMode: ActionMode? = null
         val addNotes = binding.addNotesFab
-        /*
-        actionmode code for multiple item selection
+
+        showNotes()
         val callback = object : ActionMode.Callback {
 
             override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-                mode?.menuInflater?.inflate(R.menu.home_top_app_bar_menu,menu)
+                mode?.menuInflater?.inflate(R.menu.home_fragment_action_bar_menu,menu)
+
                 return true
             }
 
@@ -95,46 +99,34 @@ class HomeFragment : Fragment() {
             }
 
             override fun onDestroyActionMode(mode: ActionMode?) {
-
+                binding.appBarLayout.visibility = View.VISIBLE
             }
 
         }
-        actionMode = activity?.startActionMode(callback)
-        actionMode?.title = "1 selected"*/
-        showNotes()
-        binding.homeNestedScrollview.setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
-                searchBar.collapse(searchBar,binding.appBarLayout,true)
-            binding.searchviewScrollbar.scrollY = 0
-            searchBar.visibility=View.VISIBLE
 
+
+
+        binding.homeNestedScrollview.setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+            binding.searchviewScrollbar.scrollY = 0
         }
         searchView.editText.addTextChangedListener{
             loadSearchNotes(it.toString())
         }
+        
         addNotes.setOnClickListener {
             view.findNavController().navigate(R.id.action_homeFragment_to_addEditNoteFragment)
+        }
+
+        searchBar.setNavigationOnClickListener {
 
         }
-        binding.searchBar.setOnClickListener {
-            Log.i("codelog_homefragment","searchBar clicked")
-        }
-        binding.searchviewScrollbar.setOnScrollChangeListener{v, scrollX, scrollY, oldScrollX, oldScrollY ->
+        binding.searchviewScrollbar.setOnScrollChangeListener{ _, _, scrollY, _, oldScrollY ->
             if (scrollY > oldScrollY){
                 searchView.clearFocusAndHideKeyboard()
                 searchView.editText.clearFocus()
             }
             binding.homeNestedScrollview.scrollY = 0
             searchBar.collapse(searchBar,binding.appBarLayout,true)
-
-        }
-        searchView.setOnFocusChangeListener { v, hasFocus ->
-            if (!hasFocus){
-                binding.addNotesFab.visibility=View.VISIBLE
-                binding.homeNestedScrollview.scrollY = 0
-            } else {
-                binding.addNotesFab.visibility=View.INVISIBLE
-                binding.notesSearchview.scrollY = 0
-            }
         }
     }
 
@@ -145,7 +137,7 @@ class HomeFragment : Fragment() {
         recyclerViewSearch.layoutManager = StaggeredGridLayoutManager(2, 1)
         lifecycleScope.launch {
 
-            viewModel.searchNotesByText(text).collect() {
+            viewModel.searchNotesByText(text).collect {
                 notes = it
                 Log.i("homefragment", it.toString())
                 noteSearchAdapter = NoteSearchAdapter(notes)
@@ -158,14 +150,26 @@ class HomeFragment : Fragment() {
     }
     private fun showNotes() {
         //gets data from the database and populate the recyclerView
-        recyclerViewHome = binding.notesRecyclerView
-        recyclerViewHome.layoutManager = StaggeredGridLayoutManager(2, 1)
+        recyclerViewNotes = binding.notesRecyclerView
+/*
+        recyclerViewPinnedNotes = binding.pinnedNotesRecyclerView
+*/
+/*
+        recyclerViewPinnedNotes.layoutManager = StaggeredGridLayoutManager(2, 1)
+*/
+        recyclerViewNotes.layoutManager = StaggeredGridLayoutManager(2, 1)
         lifecycleScope.launch {
-            viewModel.allNotes.collect() {
+            viewModel.allNotes.collect{
                 notes = it
-                Log.i("homefragment", it.toString())
+       /*         var pinnedNotes = notes.filter { note->
+                    note.pinned
+                }*/
+                notes = notes.filter { note ->
+                    note.pinned
+                }
+                /*Log.i("homefragment", pinnedNotes.toString())*/
                 noteAdapter = NoteAdapter(notes)
-                recyclerViewHome.adapter = noteAdapter
+                recyclerViewNotes.adapter = noteAdapter
 
             }
         }

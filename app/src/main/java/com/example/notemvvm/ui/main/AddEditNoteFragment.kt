@@ -1,14 +1,22 @@
 package com.example.notemvvm.ui.main
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.graphics.drawable.toDrawable
+import androidx.core.view.MenuProvider
+import androidx.core.view.get
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.notemvvm.NoteApplication
+import com.example.notemvvm.R
 import com.example.notemvvm.data.Note
 import com.example.notemvvm.databinding.FragmentAddEditNoteBinding
 import kotlinx.coroutines.launch
@@ -18,7 +26,7 @@ class AddEditNoteFragment : Fragment() {
     private var note: Note? = null
     private val args: AddEditNoteFragmentArgs by navArgs()
     private val binding get() = _binding!!
-    private val viewmodel: AppViewModel by activityViewModels {
+    private val viewModel: AppViewModel by activityViewModels {
         AppViewModel.AppViewModelFactory(
             (activity?.application as NoteApplication).database.noteDao()
         )
@@ -33,38 +41,100 @@ class AddEditNoteFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        if (args.noteId!=0){
+        if (args.noteId != 0) {
             loadNote(args.noteId)
         }
         binding.addeditnoteTopappbar.setNavigationOnClickListener {
-            if (noteValidation()){
-                saveNote()
+            if (noteValidation()) {
+                if (note == null) {
+                    saveNote()
+                } else {
+                    editNote()
+                }
             }
+            view.findNavController().navigateUp()
+        }
+
+        binding.addeditnoteTopappbar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.label -> {
+                    true
+                }
+
+                R.id.pin -> {
+                    pinNote()
+                    true
+                }
+
+                R.id.delete -> {
+                    deleteNote()
+                    true
+                }
+                else -> super.onContextItemSelected(it)
+
+            }
+
+
         }
 
     }
+
+
+
+    private fun pinNote() {
+        if (note?.pinned==true){
+            note?.pinned=false
+        }else if (note?.pinned==false){
+            note?.pinned=true
+        }
+        pinCheck()
+    }
+
 
     private fun loadNote(noteId: Int){
         val title = binding.titleEdittext
         val body = binding.contentEdittext
         lifecycleScope.launch{
-            viewmodel.getNoteById(noteId).collect {
+            viewModel.getNoteById(noteId).collect {
                 title.setText(it.title)
                 body.setText(it.body)
                 note = it
+                pinCheck()
             }
         }
 
     }
 
-    private fun saveNote(){
+    private fun pinCheck() {
+        if (note?.pinned==true){
+            binding.addeditnoteTopappbar.menu[1].setIcon(R.drawable.push_pin_filled_24px)
 
-        note = Note(0,binding.titleEdittext.text.toString(),binding.contentEdittext.text.toString(),System.currentTimeMillis().toLong(),"null",false)
-        viewmodel.addNote(note!!)
+        }else if (note?.pinned==false){
+            binding.addeditnoteTopappbar.menu[1].setIcon(R.drawable.push_pin_24px)
+        }
+    }
+
+    private fun saveNote(){
+        note = Note(binding.titleEdittext.text.toString(),binding.contentEdittext.text.toString(),System.currentTimeMillis()," ",note!!.pinned)
+        viewModel.addNote(note!!)
+    }
+
+    private fun editNote(){
+        note?.title = binding.titleEdittext.text.toString()
+        note?.body = binding.contentEdittext.text.toString()
+        note?.timestamp = System.currentTimeMillis()
+        note?.let { viewModel.update(it) }
+    }
+
+    private fun deleteNote() {
+        if (note!=null) {
+            viewModel.delete(note!!)
+        }
+        findNavController().navigateUp()
     }
     private fun noteValidation():Boolean{
-        return binding.titleEdittext.text!=null||binding.contentEdittext.text!=null
+
+        return binding.titleEdittext.text!!.isNotEmpty()||binding.contentEdittext.text!!.isNotEmpty()
 
     }
 

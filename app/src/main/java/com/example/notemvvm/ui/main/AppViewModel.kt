@@ -42,10 +42,14 @@ class AppViewModel(private val repository: NoteDao) : ViewModel() {
         repository.insert(note)
         Log.i("homeviewModel","${this.toString()}")
     }
-    private fun delete(note: List<Note>) = viewModelScope.launch {
+    fun delete(note: List<Note>) = viewModelScope.launch {
         repository.delete(note)
     }
-    private fun update(note: Note) = viewModelScope.launch {
+    fun delete(note: Note)= viewModelScope.launch{
+        repository.delete(note)
+    }
+
+    fun update(note: Note) = viewModelScope.launch {
         repository.update(note)
     }
 

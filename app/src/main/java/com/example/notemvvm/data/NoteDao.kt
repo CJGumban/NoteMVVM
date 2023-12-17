@@ -31,6 +31,10 @@ interface NoteDao {
     @Delete
     suspend fun delete(markedNotes: List<Note>)
 
+    @Delete
+    suspend fun delete(note: Note)
+
+
 
 
     

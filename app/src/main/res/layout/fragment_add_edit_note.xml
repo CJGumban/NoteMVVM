@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:theme="@style/ThemeOverlay.AppCompat.DayNight"
+    android:theme="@style/AppTheme"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.main.AddEditNoteFragment"
     android:orientation="vertical">
@@ -24,7 +24,6 @@
             android:id="@+id/addeditnote_topappbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="?attr/actionBarSize"
             app:menu="@menu/add_edit_toolbar_menu"
             app:layout_scrollFlags="scroll|enterAlways|snap"
             app:navigationIcon="@drawable/arrow_back_ios_new_24px"/>
@@ -45,15 +44,16 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/title_edittext"
-                style="@style/TextAppearance.MaterialComponents.Headline5"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#00FFFFFF"
-                android:editable="true"
                 android:hint="@string/title"
                 android:maxLines="50"
                 android:minHeight="48dp"
                 android:paddingHorizontal="8dp"
+                android:textColor="?attr/colorPrimary"
+                android:textSize="24sp"
                 app:layout_constraintBottom_toTopOf="@id/content_edittext"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -61,11 +61,11 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/content_edittext"
+                android:textColor="?attr/colorPrimary"
                 style="@style/TextAppearance.MaterialComponents.Body1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#00FFFFFF"
-                android:editable="true"
                 android:hint="@string/note"
                 android:maxLines="50"
                 android:minHeight="48dp"
