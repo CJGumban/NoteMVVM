@@ -12,13 +12,19 @@ data class Note(
     @ColumnInfo(name = "body") var body: String,
     @ColumnInfo(name = "timestamp") var timestamp: Long,
     @ColumnInfo(name = "label") var label: String?,
-    @ColumnInfo(name = "pinned") var pinned:Boolean
+    @ColumnInfo(name = "pinned") var pinned:Boolean = false
 ){
     constructor(title: String,body: String,timestamp: Long,label: String?,pinned:Boolean) : this(0, title, body, timestamp, label, pinned) {
         this.title = title
         this.body = body
         this.timestamp = timestamp
         this.label = label
+        this.pinned = pinned
+
+
+    }
+
+    constructor(pinned:Boolean) : this(0,"","",0,"",pinned) {
         this.pinned = pinned
 
 

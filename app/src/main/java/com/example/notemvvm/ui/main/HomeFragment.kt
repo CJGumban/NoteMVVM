@@ -50,8 +50,7 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        val view = binding.root
-        return view
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -161,12 +160,6 @@ class HomeFragment : Fragment() {
         lifecycleScope.launch {
             viewModel.allNotes.collect{
                 notes = it
-       /*         var pinnedNotes = notes.filter { note->
-                    note.pinned
-                }*/
-                notes = notes.filter { note ->
-                    note.pinned
-                }
                 /*Log.i("homefragment", pinnedNotes.toString())*/
                 noteAdapter = NoteAdapter(notes)
                 recyclerViewNotes.adapter = noteAdapter

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/label"
+        android:icon="@drawable/label_24px"
+        android:title="More"
+        android:contentDescription="More"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/pin"
+        android:icon="@drawable/push_pin_24px"
+        android:title="pin"
+        android:contentDescription="pin"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/delete"
+        android:icon="@drawable/delete_24px"
+        android:title="Delete"
+        android:contentDescription="Delete"
+        android:visible="true"
+        app:showAsAction="always"/>
+
+</menu>

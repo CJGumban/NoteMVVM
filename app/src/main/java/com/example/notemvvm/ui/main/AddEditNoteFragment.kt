@@ -46,7 +46,7 @@ class AddEditNoteFragment : Fragment() {
         }
         binding.addeditnoteTopappbar.setNavigationOnClickListener {
             if (noteValidation()) {
-                if (note == null) {
+                if (note?.id == 0) {
                     saveNote()
                 } else {
                     editNote()
@@ -84,8 +84,9 @@ class AddEditNoteFragment : Fragment() {
     private fun pinNote() {
         if (note?.pinned==true){
             note?.pinned=false
-        }else if (note?.pinned==false){
+        }else if (note?.pinned==false||note==null){
             note?.pinned=true
+            note = Note(true)
         }
         pinCheck()
     }
@@ -130,7 +131,7 @@ class AddEditNoteFragment : Fragment() {
         if (note!=null) {
             viewModel.delete(note!!)
         }
-        findNavController().navigateUp()
+        findNavController().popBackStack()
     }
     private fun noteValidation():Boolean{
 
