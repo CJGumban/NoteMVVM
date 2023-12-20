@@ -27,10 +27,11 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
     private lateinit var recyclerViewNotes: RecyclerView
- //   private lateinit var recyclerViewPinnedNotes: RecyclerView
+    private lateinit var recyclerViewPinnedNotes: RecyclerView
     private lateinit var recyclerViewSearch: RecyclerView
     private var notes:List<Note> = mutableListOf()
     private var noteAdapter = NoteAdapter(notes)
+    private var pinnedNoteAdapter = NoteAdapter(notes)
     private var noteSearchAdapter = NoteSearchAdapter(notes)
     private val viewModel: AppViewModel by activityViewModels{
         AppViewModel.AppViewModelFactory(
@@ -149,22 +150,38 @@ class HomeFragment : Fragment() {
     }
     private fun showNotes() {
         //gets data from the database and populate the recyclerView
+        var pinnednotes: List<Note>
+        var unpinnednotes: List<Note>
         recyclerViewNotes = binding.notesRecyclerView
-/*
         recyclerViewPinnedNotes = binding.pinnedNotesRecyclerView
-*/
-/*
         recyclerViewPinnedNotes.layoutManager = StaggeredGridLayoutManager(2, 1)
-*/
         recyclerViewNotes.layoutManager = StaggeredGridLayoutManager(2, 1)
         lifecycleScope.launch {
             viewModel.allNotes.collect{
                 notes = it
-                /*Log.i("homefragment", pinnedNotes.toString())*/
-                noteAdapter = NoteAdapter(notes)
+                pinnednotes = notes.filter { it.pinned }
+                unpinnednotes = notes.filter { !it.pinned }
+                Log.i("HomeFragment","pinned notes list $pinnednotes" )
+                Log.i("HomeFragment", "unpinned notes list $unpinnednotes")
+                if (pinnednotes.isEmpty()){
+                    binding.pinnedTextview.visibility=View.GONE
+                    binding.unpinnedTextview.visibility=View.GONE
+                    binding.pinnedNotesRecyclerView.visibility=View.GONE
+                }else if (unpinnednotes.isEmpty()){
+                    binding.unpinnedTextview.visibility=View.GONE
+                    binding.notesRecyclerView.visibility=View.GONE
+                }else if (pinnednotes.isEmpty()&&unpinnednotes.isEmpty()) {
+                    binding.pinnedTextview.visibility=View.GONE
+                    binding.unpinnedTextview.visibility=View.GONE
+                    binding.pinnedNotesRecyclerView.visibility=View.GONE
+                    binding.notesRecyclerView.visibility=View.GONE
+                }
+                noteAdapter = NoteAdapter(unpinnednotes)
                 recyclerViewNotes.adapter = noteAdapter
-
+                pinnedNoteAdapter = NoteAdapter(pinnednotes)
+                recyclerViewPinnedNotes.adapter = pinnedNoteAdapter
             }
+
         }
     }
 

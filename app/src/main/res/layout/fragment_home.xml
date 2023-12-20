@@ -28,18 +28,45 @@
         android:clipToPadding="false"
         app:layout_behavior="com.google.android.material.search.SearchBar$ScrollingViewBehavior"
         >
-<!--        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/pinned_notes_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingTop="84dp"
-            android:visibility="visible" />-->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/notes_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingTop="84dp"
-            android:visibility="visible" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingTop="84dp">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/pinned_textview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Pinned"
+                    android:paddingStart="12dp"
+                    android:textSize="12sp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/pinned_notes_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="8dp"
+                    android:visibility="visible"
+                    app:layout_constraintTop_toBottomOf="@id/pinned_textview" />
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/unpinned_textview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Others"
+                    android:paddingStart="12dp"
+                    android:textSize="12sp"
+                    android:paddingBottom="4dp"
+                    app:layout_constraintTop_toBottomOf="@id/pinned_notes_recycler_view"
+                    />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/notes_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="visible"
+                    app:layout_constraintTop_toBottomOf="@id/unpinned_textview"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.appbar.AppBarLayout

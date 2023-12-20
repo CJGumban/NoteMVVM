@@ -41,12 +41,13 @@ class AddEditNoteFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        //to check if an id was passed from the note adapter which means it is not a new
         if (args.noteId != 0) {
             loadNote(args.noteId)
         }
         binding.addeditnoteTopappbar.setNavigationOnClickListener {
             if (noteValidation()) {
-                if (note?.id == 0) {
+                if (note == null||note?.id == 0) {
                     saveNote()
                 } else {
                     editNote()
@@ -84,8 +85,10 @@ class AddEditNoteFragment : Fragment() {
     private fun pinNote() {
         if (note?.pinned==true){
             note?.pinned=false
-        }else if (note?.pinned==false||note==null){
+        }else if (note?.pinned==false){
             note?.pinned=true
+        }
+        else if(note==null){
             note = Note(true)
         }
         pinCheck()
@@ -116,8 +119,14 @@ class AddEditNoteFragment : Fragment() {
     }
 
     private fun saveNote(){
+        if (note==null){note= Note(false)
+        }
+        var testingnotes = note.toString()
+        Log.i("testing", "addeditnotefragment $testingnotes")
         note = Note(binding.titleEdittext.text.toString(),binding.contentEdittext.text.toString(),System.currentTimeMillis()," ",note!!.pinned)
         viewModel.addNote(note!!)
+        testingnotes = note.toString()
+        Log.i("testing", "addeditnotefragment $testingnotes")
     }
 
     private fun editNote(){
