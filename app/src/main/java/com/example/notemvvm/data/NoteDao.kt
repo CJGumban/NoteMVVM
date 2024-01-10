@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
@@ -35,8 +36,23 @@ interface NoteDao {
     suspend fun delete(note: Note)
 
 
+    //labelquery
 
+    @Query("SELECT * FROM label_table")
+    fun getAllLabel(): Flow<List<Label>>
+   @Insert(onConflict = OnConflictStrategy.REPLACE)
+   suspend fun insertLabel(label: Label)
 
-    
+    @Update
+    suspend fun updateLabel(label: Label)
+
+    @Delete
+    suspend fun deleteLabel(label: Label)
+
+/*
+    @Transaction
+    @Query("SELECT * FROM note_table WHERE label = :label")
+    suspend fun getLabelWithNotes(label: String): List<LabelWithNotes>
+*/
 
 }

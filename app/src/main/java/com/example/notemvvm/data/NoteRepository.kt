@@ -36,6 +36,18 @@ class NoteRepository(private val noteDao: NoteDao) {
         noteDao.delete(markedNotes)
     }
 
+    suspend fun insertLabel(label: Label) {
+        noteDao.insertLabel(label)
+    }
+
+    suspend fun updateLabel(label: Label){
+        noteDao.updateLabel(label)
+    }
+
+    suspend fun deleteLabel(label: Label){
+        noteDao.deleteLabel(label)
+    }
+
 
 
 }

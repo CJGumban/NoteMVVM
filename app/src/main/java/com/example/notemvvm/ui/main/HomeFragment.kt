@@ -61,6 +61,19 @@ class HomeFragment : Fragment() {
         var actionMode: ActionMode? = null
         val addNotes = binding.addNotesFab
 
+
+
+
+
+
+
+
+
+        binding.homeNavigationdrawer.menu.findItem(R.id.add_edit_label).setOnMenuItemClickListener {
+            binding.homeFragment.close()
+            view.findNavController().navigate(R.id.action_homeFragment_to_labelListFragment)
+            true
+        }
         showNotes()
         val callback = object : ActionMode.Callback {
 
@@ -118,7 +131,7 @@ class HomeFragment : Fragment() {
         }
 
         searchBar.setNavigationOnClickListener {
-
+            binding.homeFragment.open()
         }
         binding.searchviewScrollbar.setOnScrollChangeListener{ _, _, scrollY, _, oldScrollY ->
             if (scrollY > oldScrollY){
@@ -128,9 +141,19 @@ class HomeFragment : Fragment() {
             binding.homeNestedScrollview.scrollY = 0
             searchBar.collapse(searchBar,binding.appBarLayout,true)
         }
+        binding.homeNavigationdrawer.setNavigationItemSelectedListener { menuItem->
+            menuItem.isChecked = true
+
+            binding.homeFragment.close()
+            true
+        }
+
     }
 
-
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding=null
+    }
 
     private fun loadSearchNotes(text:String = "") {
         recyclerViewSearch = binding.notesSearchviewRecyclerview
@@ -138,7 +161,7 @@ class HomeFragment : Fragment() {
         lifecycleScope.launch {
 
             viewModel.searchNotesByText(text).collect {
-                notes = it
+                notes = it.reversed()
                 Log.i("homefragment", it.toString())
                 noteSearchAdapter = NoteSearchAdapter(notes)
                 recyclerViewSearch.adapter = noteSearchAdapter
@@ -158,7 +181,7 @@ class HomeFragment : Fragment() {
         recyclerViewNotes.layoutManager = StaggeredGridLayoutManager(2, 1)
         lifecycleScope.launch {
             viewModel.allNotes.collect{
-                notes = it
+                notes = it.reversed()
                 pinnednotes = notes.filter { it.pinned }
                 unpinnednotes = notes.filter { !it.pinned }
                 Log.i("HomeFragment","pinned notes list $pinnednotes" )

@@ -4,9 +4,12 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.notemvvm.data.Label
 import com.example.notemvvm.data.Note
 import com.example.notemvvm.data.NoteDao
+import kotlinx.coroutines.channels.broadcast
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import java.lang.IllegalArgumentException
 
@@ -52,6 +55,25 @@ class AppViewModel(private val repository: NoteDao) : ViewModel() {
     fun update(note: Note) = viewModelScope.launch {
         repository.update(note)
     }
+
+    //label_table functions
+
+    fun getAllLabels(): Flow<List<Label>> = repository.getAllLabel()
+
+    fun insertLabel(label: Label) = viewModelScope.launch {
+        repository.insertLabel(label)
+
+    }
+
+    fun updateLabel(label: Label) = viewModelScope.launch{
+        repository.updateLabel(label)
+    }
+    fun deleteLabel(label: Label) = viewModelScope.launch {
+        repository.deleteLabel(label)
+    }
+
+
+
 
 
 

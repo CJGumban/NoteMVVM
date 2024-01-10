@@ -95,6 +95,10 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     implementation("androidx.coordinatorlayout:coordinatorlayout:1.3.0-alpha01")
 
+    //navigation drawer
+    implementation ("androidx.drawerlayout:drawerlayout:1.2.0")
+
+
 
 
 

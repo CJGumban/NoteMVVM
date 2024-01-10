@@ -16,6 +16,11 @@
             >
 
         </action>
+        <action
+            android:id="@+id/action_homeFragment_to_labelListFragment"
+            app:destination="@id/labelListFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:popEnterAnim="@anim/nav_default_enter_anim" />
     </fragment>
     <fragment
         android:id="@+id/addEditNoteFragment"
@@ -30,4 +35,9 @@
             app:argType="integer"
             android:defaultValue="0" />
     </fragment>
+    <fragment
+        android:id="@+id/labelListFragment"
+        android:name="com.example.notemvvm.ui.main.LabelListFragment"
+        android:label="fragment_label_list"
+        tools:layout="@layout/fragment_label_list" />
 </navigation>
