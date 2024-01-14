@@ -8,6 +8,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+
+import androidx.core.view.forEach
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -17,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.notemvvm.NoteApplication
 import com.example.notemvvm.R
+import com.example.notemvvm.data.Label
 import com.example.notemvvm.data.Note
 import com.example.notemvvm.databinding.FragmentHomeBinding
 import com.example.notemvvm.ui.main.adapter.NoteAdapter
@@ -30,6 +33,7 @@ class HomeFragment : Fragment() {
     private lateinit var recyclerViewPinnedNotes: RecyclerView
     private lateinit var recyclerViewSearch: RecyclerView
     private var notes:List<Note> = mutableListOf()
+    private var labels: List<Label> = mutableListOf()
     private var noteAdapter = NoteAdapter(notes)
     private var pinnedNoteAdapter = NoteAdapter(notes)
     private var noteSearchAdapter = NoteSearchAdapter(notes)
@@ -60,10 +64,8 @@ class HomeFragment : Fragment() {
         val searchView = binding.notesSearchview
         var actionMode: ActionMode? = null
         val addNotes = binding.addNotesFab
-
-
-
-
+        loadLabels()
+        loadNotes()
 
 
 
@@ -74,7 +76,15 @@ class HomeFragment : Fragment() {
             view.findNavController().navigate(R.id.action_homeFragment_to_labelListFragment)
             true
         }
-        showNotes()
+        binding.homeNavigationdrawer.menu.findItem(R.id.note_item).setOnMenuItemClickListener {
+            binding.homeFragment.close()
+            loadNotes()
+            true
+        }
+
+
+
+
         val callback = object : ActionMode.Callback {
 
             override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
@@ -147,6 +157,7 @@ class HomeFragment : Fragment() {
             binding.homeFragment.close()
             true
         }
+        // TODO: pop up to pick label
 
     }
 
@@ -171,7 +182,7 @@ class HomeFragment : Fragment() {
 
 
     }
-    private fun showNotes() {
+    private fun loadNotes() {
         //gets data from the database and populate the recyclerView
         var pinnednotes: List<Note>
         var unpinnednotes: List<Note>
@@ -208,7 +219,48 @@ class HomeFragment : Fragment() {
         }
     }
 
-            //tested recycler view with random content
+    fun loadLabels(){
+
+        lifecycleScope.launch {
+            viewModel.getAllLabels().collect{
+                labels = it.reversed()
+                labels.forEach{
+                    var m = binding.homeNavigationdrawer.menu.add(0,it.id,0,it.label)
+                        .setIcon(R.drawable.label_24px)
+                    Log.i("testing", "menu ${m}")
+                    m.setOnMenuItemClickListener {
+                        Log.i("testing", "menu ${it.groupId}" +
+                                "${it.itemId}" +
+                                "${it.title}" )
+                        filterNotesByLabel(it.title.toString())
+                        true
+                    }
+
+                }
+                }
+            }
+        binding.homeNavigationdrawer.menu.forEach {
+            Log.i("testing", "${it}")
+            it.setOnMenuItemClickListener {
+                Log.i("testing", "${it} clicked")
+                true
+            }
+        }
+
+    }
+
+    private fun filterNotesByLabel(title: String) {
+        var filteredByLabel: List<Note> = notes?.filter {
+            it.label==title
+        }!!
+        binding.pinnedTextview.visibility=View.GONE
+        binding.unpinnedTextview.visibility=View.GONE
+        binding.pinnedNotesRecyclerView.visibility=View.GONE
+        noteAdapter = NoteAdapter(filteredByLabel)
+        recyclerViewNotes.adapter = noteAdapter
+    }
+
+    //tested recycler view with random content
             /*fun generateLetters():String{
         val length = Random.nextInt(1, 500) // Generate a random length between 1 and 120
         val letters = CharArray(length) {

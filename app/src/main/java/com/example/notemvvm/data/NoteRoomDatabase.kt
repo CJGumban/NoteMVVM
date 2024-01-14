@@ -13,18 +13,33 @@ import androidx.sqlite.db.SupportSQLiteDatabase
                         Note::class,
                         Label::class
                      ],
-    version = 12, exportSchema = false)
-public abstract class NoteRoomDatabase : RoomDatabase(){
+    version = 13, exportSchema = false)
+abstract class NoteRoomDatabase : RoomDatabase(){
 
     abstract fun noteDao():NoteDao
 
     companion object{
-        val MIGRATION_11_12 = object : Migration(11, 12) {
+        private val MIGRATION_11_12 = object : Migration(11, 12) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL("CREATE TABLE `label_table` (`label_name` TEXT," +
                         "PRIMARY KEY(`label_name`))")
             }
         }
+        private val MIGRATION_12_13 = object : Migration(12, 13) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("CREATE TABLE  `new_label_table` (`id` INTEGER, " +
+                        "`label` TEXT " +
+                        "PRIMARY KEY(`id`))")
+
+                database.execSQL("INSERT INTO new_course_table(label" +
+                        "SELECT label_name FROM label_table")
+
+                database.execSQL("DROP TABLE label_table")
+
+                database.execSQL("ALTER TABLE new_label_table RENAME TO label_table")
+            }
+        }
+
 
         //Singleton prevents multiple instances of database opening at the same time.
         @Volatile
@@ -39,7 +54,8 @@ public abstract class NoteRoomDatabase : RoomDatabase(){
                     context.applicationContext,
                     NoteRoomDatabase::class.java,
                     "note_database"
-                ).fallbackToDestructiveMigration().addMigrations(MIGRATION_11_12).
+                ).fallbackToDestructiveMigration()
+                    .addMigrations(MIGRATION_11_12, MIGRATION_12_13).
 
                 build()
                 INSTANCE = instance

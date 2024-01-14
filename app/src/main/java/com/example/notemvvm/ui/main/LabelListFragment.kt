@@ -62,7 +62,7 @@ class LabelListFragment : Fragment(), RecyclerViewEvent {
                 addNewLabelTextField.setEndIconOnClickListener {
                     if (addNewLabelTextField.editText!!.isFocused&&addNewLabelTextField.isNotEmpty()){
                         Log.i("testing","end icon pressed")
-                        saveLabel()
+                        createLabel()
                         addNewLabelTextField.clearFocus()
 
                     }
@@ -114,19 +114,18 @@ class LabelListFragment : Fragment(), RecyclerViewEvent {
 
     }
 
-    override fun onStartIconClick(position: Int) {
-        deleteLabel(position)
+    override fun onStartIconClick(label: Label) {
+        deleteLabel(label)
     }
 
 
 
-    override fun onEndIconClick(position: Int) {
-        updateLabel(position)
+    override fun onEndIconClick(label: Label) {
+        updateLabel(label)
     }
 
-    // TODO: create newId to update  
-    private fun updateLabel(position: Int) {
-        var label = labels[position]
+    private fun updateLabel(label: Label) {
+
         viewModel.updateLabel(label)
             .invokeOnCompletion {
                 Log.i("testing", it.toString())
@@ -139,8 +138,7 @@ class LabelListFragment : Fragment(), RecyclerViewEvent {
             }
     }
 
-    private fun deleteLabel(position: Int) {
-            var label = labels[position]
+    private fun deleteLabel(label: Label) {
         viewModel.deleteLabel(label)
             .invokeOnCompletion {
                 Log.i("testing", it.toString())
@@ -152,7 +150,7 @@ class LabelListFragment : Fragment(), RecyclerViewEvent {
                 showLabels()
             }
     }
-    private fun saveLabel(){
+    private fun createLabel(){
         if (binding.outlinedTextFieldAddnewlabel.isNotEmpty()){
             var label = Label(binding.outlinedTextFieldAddnewlabel.editText!!.text.toString())
             viewModel.insertLabel(label)
@@ -164,9 +162,7 @@ class LabelListFragment : Fragment(), RecyclerViewEvent {
                         Toast.LENGTH_SHORT)
                         .show()
                     showLabels()
-
                 }
-
         }
     }
 

@@ -5,27 +5,22 @@
 
 
         <item
-            android:id="@+id/note"
+            android:id="@+id/note_item"
             android:icon="@drawable/note_24px"
-            android:title="Note"
+            android:title="Notes"
             android:contentDescription="Note"
             app:showAsAction="always"/>
 
-            <item
-                android:id="@+id/notes_title"
-                android:title="Labels">
+        <item
+            android:id="@+id/label_item"
+            android:title="Labels">
 
-                <menu>
-                    <item
-                        android:id="@+id/label"
-                        android:icon="@drawable/label_24px"
-                        android:title="Title"
-                        app:showAsAction="ifRoom" />
-                    <item
-                        android:id="@+id/add_edit_label"
-                        android:icon="@drawable/add_edit_24px"
-                        android:title="Create/Edit Labels"
-                        app:showAsAction="always"/>
-                </menu>
-            </item>
+            <menu>
+                <item
+                    android:id="@+id/add_edit_label"
+                    android:icon="@drawable/add_edit_24px"
+                    android:title="Create/Edit Labels"
+                    app:showAsAction="always"/>
+            </menu>
+        </item>
 </menu>

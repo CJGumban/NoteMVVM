@@ -51,8 +51,8 @@ class LabelListAdapter(
 
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        var labelName = label[position].labelName
-        viewHolder.labelOutline.editText?.setText(labelName)
+        var currentLabel = label[position]
+        viewHolder.labelOutline.editText?.setText(currentLabel.label)
 
 
         viewHolder.labelOutline.editText?.setOnFocusChangeListener { v, hasFocus ->
@@ -64,8 +64,8 @@ class LabelListAdapter(
                         Log.i("testing", "viewholder " +
                                 "postition $position" +
                                 "end icon pressed")
-
-                        listener.onEndIconClick(position)
+                        currentLabel = Label(currentLabel.id,viewHolder.labelOutline.editText?.text.toString())
+                        listener.onEndIconClick(currentLabel)
                         viewHolder.labelOutline.editText!!.clearFocus()
                     }
                 }
@@ -75,13 +75,14 @@ class LabelListAdapter(
                         Log.i("testing", "viewholder " +
                                 "postition $position" +
                                 "start icon pressed")
-                        listener.onStartIconClick(position)
+                        listener.onStartIconClick(currentLabel)
+                        viewHolder.labelOutline.editText!!.clearFocus()
 
                     }
                 }
             }else{
-                label[position].labelName
-                viewHolder.labelOutline.editText?.setText(labelName)
+                label[position].label
+                viewHolder.labelOutline.editText?.setText(currentLabel.label)
                 viewHolder.labelOutline.setStartIconDrawable(R.drawable.label_24px)
                 viewHolder.labelOutline.setEndIconDrawable(R.drawable.edit_24px)
                 viewHolder.labelOutline.setEndIconOnClickListener(null)
