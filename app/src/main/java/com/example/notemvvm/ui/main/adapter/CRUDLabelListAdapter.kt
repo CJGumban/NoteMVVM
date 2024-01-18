@@ -1,19 +1,22 @@
 package com.example.notemvvm.ui.main.adapter
 
+
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+
 import androidx.core.view.isNotEmpty
 import androidx.recyclerview.widget.RecyclerView
 import com.example.notemvvm.R
 import com.example.notemvvm.data.Label
 import com.google.android.material.textfield.TextInputLayout
 
-class LabelListAdapter(
+
+class CRUDLabelListAdapter(
     private val label: List<Label>,
     private val listener: RecyclerViewEvent
-): RecyclerView.Adapter<LabelListAdapter.ViewHolder>(){
+): RecyclerView.Adapter<CRUDLabelListAdapter.ViewHolder>(){
 
     inner class ViewHolder(
         view: View) : RecyclerView.ViewHolder(view){
@@ -53,8 +56,6 @@ class LabelListAdapter(
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         var currentLabel = label[position]
         viewHolder.labelOutline.editText?.setText(currentLabel.label)
-
-
         viewHolder.labelOutline.editText?.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus){
                 viewHolder.labelOutline.setStartIconDrawable(R.drawable.delete_24px)
@@ -64,7 +65,7 @@ class LabelListAdapter(
                         Log.i("testing", "viewholder " +
                                 "postition $position" +
                                 "end icon pressed")
-                        currentLabel = Label(currentLabel.id,viewHolder.labelOutline.editText?.text.toString())
+                        currentLabel = Label(currentLabel.labelId,viewHolder.labelOutline.editText?.text.toString())
                         listener.onEndIconClick(currentLabel)
                         viewHolder.labelOutline.editText!!.clearFocus()
                     }

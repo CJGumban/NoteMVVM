@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.notemvvm.data.Label
 import com.example.notemvvm.data.Note
 import com.example.notemvvm.data.NoteDao
+import com.example.notemvvm.data.NoteWithLabel
+import com.example.notemvvm.data.relationship.NoteLabelCrossRef
 import kotlinx.coroutines.channels.broadcast
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.job
@@ -23,10 +25,8 @@ class AppViewModel(private val repository: NoteDao) : ViewModel() {
 
     val allNotes: Flow<List<Note>> = repository.allNotes()
 
-    fun searchNotesByText(search:String): Flow<List<Note>> {
-        return searchNotes(search)
-    }
-    public fun addNote(note: Note){
+    fun searchNotesByText(search:String): Flow<List<Note>> = repository.searchNotes(search)
+    fun addNote(note: Note){
         insert(note)
     }
 
@@ -36,14 +36,13 @@ class AppViewModel(private val repository: NoteDao) : ViewModel() {
 
     private fun _getNoteById(noteId: Int): Flow<Note> = repository.getNoteById(noteId)
 
-    private fun getNotesByLabel(label: String): Flow<List<Note>> = repository.getNotesByLabel(label)
-    private fun searchNotes(search: String): Flow<List<Note>> = repository.searchNotes(search)
+    private fun searchNoteLabels(search: String): Flow<List<NoteWithLabel>> = repository.searchNoteLabels(search)
     /*
     Launching a new coroutine to insert the data in a non0blocking  way
     */
     private fun insert(note: Note) = viewModelScope.launch {
         repository.insert(note)
-        Log.i("homeviewModel","${this.toString()}")
+        Log.i("homeviewModel","${this}")
     }
     fun delete(note: List<Note>) = viewModelScope.launch {
         repository.delete(note)
@@ -72,10 +71,22 @@ class AppViewModel(private val repository: NoteDao) : ViewModel() {
         repository.deleteLabel(label)
     }
 
+    fun getNoteLabels(): Flow<List<NoteWithLabel>> = repository.getAllNotes()
 
 
+//functions for NoteLabelCrossRef
+    fun getAllNoteLabelCrossRef(): Flow<List<NoteLabelCrossRef>> = repository.getAllNoteLabelCrossRef()
+    suspend fun addNoteLabelCrossRef(noteLabelCrossRef: NoteLabelCrossRef) {
+        repository.insertNoteLabelCrossRef(noteLabelCrossRef)
+    }
 
+    suspend fun removeNoteLabelCrossRef(noteLabelCrossRef: NoteLabelCrossRef) {
+        repository.deleteNoteLabelCrossRef(noteLabelCrossRef)
+    }
 
+    suspend fun deleteNoteLabelCrossRefByNoteId(noteId: Int){
+        repository.deleteNoteLabelCrossRefByNoteId(noteId)
+    }
 
 
     class AppViewModelFactory(

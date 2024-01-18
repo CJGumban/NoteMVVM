@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import com.example.notemvvm.data.NoteDao
 
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {

@@ -31,7 +31,7 @@ class AddEditNoteFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentAddEditNoteBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -43,19 +43,14 @@ class AddEditNoteFragment : Fragment() {
             loadNote(args.noteId)
         }
         binding.addeditnoteTopappbar.setNavigationOnClickListener {
-            if (noteValidation()) {
-                if (note == null||note?.id == 0) {
-                    saveNote()
-                } else {
-                    editNote()
-                }
-            }
+            noteValidation()
             view.findNavController().navigateUp()
         }
 
         binding.addeditnoteTopappbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.label -> {
+                   editNoteLabel()
                     true
                 }
 
@@ -77,6 +72,13 @@ class AddEditNoteFragment : Fragment() {
 
     }
 
+    private fun editNoteLabel() {
+
+        //noteValidation()
+       Log.i("testing", "editnotelabel() note to string ${note.toString()}")
+        val action = AddEditNoteFragmentDirections.actionAddEditNoteFragmentToLabelListFragment(true,note!!.noteId)
+        findNavController().navigate(action)
+    }
 
 
     private fun pinNote() {
@@ -120,7 +122,7 @@ class AddEditNoteFragment : Fragment() {
         }
         var testingnotes = note.toString()
         Log.i("testing", "addeditnotefragment $testingnotes")
-        note = Note(binding.titleEdittext.text.toString(),binding.contentEdittext.text.toString(),System.currentTimeMillis()," ",note!!.pinned)
+        note = Note(binding.titleEdittext.text.toString(),binding.contentEdittext.text.toString(),System.currentTimeMillis(),note!!.pinned)
         viewModel.addNote(note!!)
         testingnotes = note.toString()
         Log.i("testing", "addeditnotefragment $testingnotes")
@@ -139,10 +141,29 @@ class AddEditNoteFragment : Fragment() {
         }
         findNavController().popBackStack()
     }
-    private fun noteValidation():Boolean{
+    private fun noteValidation(){
 
-        return binding.titleEdittext.text!!.isNotEmpty()||binding.contentEdittext.text!!.isNotEmpty()
+        val valid = binding.titleEdittext.text!!.isNotEmpty()||binding.contentEdittext.text!!.isNotEmpty()
+        if (valid){
+        if (note == null||note?.noteId == 0) {
+            saveNote()
+        } else {
+            editNote()
+        }
+        }
 
+    }
+    private fun isNoteValid():Boolean{
+
+        val valid = binding.titleEdittext.text!!.isNotEmpty()||binding.contentEdittext.text!!.isNotEmpty()
+        if (valid){
+            if (note == null||note?.noteId == 0) {
+                saveNote()
+            } else {
+                editNote()
+            }
+        }
+    return valid
     }
 
 

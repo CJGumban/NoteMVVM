@@ -18,7 +18,7 @@ class NoteRepository(private val noteDao: NoteDao) {
 //    off the main thread.
 
 
-    fun getNotesByLabel(label: String): Flow<List<Note>> = noteDao.getNotesByLabel(label)
+
     fun searchNotes(search: String): Flow<List<Note>> = noteDao.searchNotes(search)
 
 
@@ -47,6 +47,8 @@ class NoteRepository(private val noteDao: NoteDao) {
     suspend fun deleteLabel(label: Label){
         noteDao.deleteLabel(label)
     }
+
+
 
 
 

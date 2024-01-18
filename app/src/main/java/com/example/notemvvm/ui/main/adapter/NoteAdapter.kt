@@ -35,15 +35,13 @@ class NoteAdapter(private val note: List<Note>) :
         viewholder.title.text = note[position].title
         viewholder.content.text = note[position].body
         viewholder.itemView.setOnClickListener {
-            val action = HomeFragmentDirections.actionHomeFragmentToAddEditNoteFragment(note[position].id)
+            val action = HomeFragmentDirections.actionHomeFragmentToAddEditNoteFragment(note[position].noteId)
             viewholder.itemView.findNavController().navigate(action)
         }
     }
 
     override fun getItemCount() = note.size
 
-    fun editItem(){
 
-    }
 
 }

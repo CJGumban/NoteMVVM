@@ -9,26 +9,37 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isNotEmpty
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.notemvvm.NoteApplication
 import com.example.notemvvm.R
 import com.example.notemvvm.data.Label
+import com.example.notemvvm.data.relationship.NoteLabelCrossRef
 import com.example.notemvvm.databinding.FragmentLabelListBinding
-import com.example.notemvvm.ui.main.adapter.LabelListAdapter
+import com.example.notemvvm.ui.main.adapter.CRUDLabelForNotesAdapter
+import com.example.notemvvm.ui.main.adapter.CRUDLabelListAdapter
 import com.example.notemvvm.ui.main.adapter.RecyclerViewEvent
 import kotlinx.coroutines.launch
+
+import kotlin.Exception
 
 
 class LabelListFragment : Fragment(), RecyclerViewEvent {
 
     private var _binding: FragmentLabelListBinding? = null
     private val binding get() = _binding!!
+
     private lateinit var recyclerViewLabel: RecyclerView
+    private var noteLabelCrossRefs: List<NoteLabelCrossRef> = mutableListOf()
     private var labels:List<Label> = mutableListOf()
-    private var labelAdapter = LabelListAdapter(labels,this)
+    private var crudLabelListAdapter = CRUDLabelListAdapter(labels,this)
+    private var crudLabelForNotesAdapter = CRUDLabelForNotesAdapter(labels,noteLabelCrossRefs,this)
+    private val args: LabelListFragmentArgs by navArgs()
+    private var noteLabelCrossRefEdit: ArrayList<NoteLabelCrossRef> = arrayListOf()
 
     private val viewModel: AppViewModel by activityViewModels {
         AppViewModel.AppViewModelFactory(
@@ -48,11 +59,31 @@ class LabelListFragment : Fragment(), RecyclerViewEvent {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        showLabels()
+        if (args.noteEditMode) {
+            if (args.noteId!=0){
+                editNoteWithLabels(args.noteId)
+            }
+        }else{
+            showLabels()
+        }
+
+       Log.i("testing","args ${args.toString()}")
+
         val addNewLabelTextField = binding.outlinedTextFieldAddnewlabel
         binding.labelListTopappbar.setNavigationOnClickListener {
-            findNavController().navigateUp()
+            if (args.noteEditMode){
+                lifecycleScope.launch {
+                    /*viewModel.deleteNoteLabelCrossRefByNoteId(args.noteId)*/
+                    noteLabelCrossRefEdit.forEach {
+                        viewModel.addNoteLabelCrossRef(it)
+
+                    }
+                    findNavController().navigateUp()
+                }
+            }else{ findNavController().navigateUp()}
+
         }
+        try {
 
         addNewLabelTextField.editText?.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus){
@@ -85,33 +116,73 @@ class LabelListFragment : Fragment(), RecyclerViewEvent {
                 addNewLabelTextField.setStartIconOnClickListener(null)
             }
         }
+        } catch (e: Exception){
+            Log.i("testing", "error ${e.toString()}")
+        }
+    }
+
+    private fun editNoteWithLabels(noteId: Int) {
+
+        recyclerViewLabel = binding.labellistRecyclerView
+        recyclerViewLabel.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL,false)
+        lifecycleScope.launch {
+            viewModel.getAllLabels().collect(){
+                labels = it.reversed()
+                Log.i("testing","labels: ${labels.toString()}")
+            }
+
+
+
+            Log.i("testing","labels: ${labels.toString()}" +
+                    "" +
+                    "notelabelscrossref ${noteLabelCrossRefs.toString()}")
+
+        }
+        lifecycleScope.launch {
+            viewModel.getAllNoteLabelCrossRef().collect{
+                noteLabelCrossRefs = it.reversed().filter { noteLabelCrossRefs-> noteLabelCrossRefs.noteId==noteId  }
+                Log.i("testing",
+                    "notelabelscrossref ${noteLabelCrossRefs.toString()}")
+                noteLabelCrossRefs.forEach {
+                    noteLabelCrossRefEdit.add(it)
+                }
+                crudLabelForNotesAdapter = CRUDLabelForNotesAdapter(labels, noteLabelCrossRefs, this@LabelListFragment)
+                recyclerViewLabel.adapter =  crudLabelForNotesAdapter
+
+            }
+        }
 
     }
 
     private fun showLabels() {
-        recyclerViewLabel = binding.labellistRecyclerView
-        recyclerViewLabel.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL,false)
+
+
         lifecycleScope.launch {
             viewModel.getAllLabels().collect{
                 labels = it.reversed()
-                labelAdapter = LabelListAdapter(labels, this@LabelListFragment)
-                recyclerViewLabel.adapter =  labelAdapter
+                recyclerViewLabel = binding.labellistRecyclerView
+                recyclerViewLabel.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL,false)
+                crudLabelListAdapter = CRUDLabelListAdapter(labels, this@LabelListFragment)
+                recyclerViewLabel.adapter =  crudLabelListAdapter
             }
 
-        }.invokeOnCompletion {
-            Log.i("Testing", "list collect done")
         }
     }
 
-    override fun onItemClick(position: Int) {
-        val item = labels[position]
-        Log.i("Testing", "fragment position title ${"$item $position"}")
-        Toast.makeText(
-            context,
-            item.toString(),
-            Toast.LENGTH_SHORT
-            ).show()
+    override fun addCrossRef(labelId: Int) {
+        lifecycleScope.launch {
+            noteLabelCrossRefEdit.add(NoteLabelCrossRef(args.noteId,labelId))
+            Log.i("testing","notelabelcrossrefedit : ${noteLabelCrossRefEdit.toString()}")
 
+        }
+
+    }
+    override fun removeCrossRef(noteLabelCrossRef: NoteLabelCrossRef){
+
+        noteLabelCrossRefEdit.remove(noteLabelCrossRef)
+    }
+
+    override fun onItemClick(position: Int) {
     }
 
     override fun onStartIconClick(label: Label) {
@@ -128,12 +199,6 @@ class LabelListFragment : Fragment(), RecyclerViewEvent {
 
         viewModel.updateLabel(label)
             .invokeOnCompletion {
-                Log.i("testing", it.toString())
-                Toast.makeText(
-                    context,
-                    "updated: ${label.toString()}",
-                    Toast.LENGTH_SHORT)
-                    .show()
                 showLabels()
             }
     }
@@ -141,12 +206,6 @@ class LabelListFragment : Fragment(), RecyclerViewEvent {
     private fun deleteLabel(label: Label) {
         viewModel.deleteLabel(label)
             .invokeOnCompletion {
-                Log.i("testing", it.toString())
-                Toast.makeText(
-                    context,
-                    "deleted: ${label.toString()}",
-                    Toast.LENGTH_SHORT)
-                    .show()
                 showLabels()
             }
     }
@@ -155,12 +214,7 @@ class LabelListFragment : Fragment(), RecyclerViewEvent {
             var label = Label(binding.outlinedTextFieldAddnewlabel.editText!!.text.toString())
             viewModel.insertLabel(label)
                 .invokeOnCompletion {
-                    Log.i("testing", it.toString())
-                    Toast.makeText(
-                        context,
-                        "Inserted: ${label.toString()}",
-                        Toast.LENGTH_SHORT)
-                        .show()
+
                     showLabels()
                 }
         }

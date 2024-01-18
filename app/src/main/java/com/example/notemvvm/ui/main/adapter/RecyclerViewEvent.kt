@@ -1,6 +1,7 @@
 package com.example.notemvvm.ui.main.adapter
 
 import com.example.notemvvm.data.Label
+import com.example.notemvvm.data.relationship.NoteLabelCrossRef
 
 interface RecyclerViewEvent {
 
@@ -9,4 +10,8 @@ interface RecyclerViewEvent {
 
     fun onStartIconClick(label: Label)
     fun onEndIconClick(label: Label)
+    fun addCrossRef(labelId: Int)
+    fun removeCrossRef(crossRef: NoteLabelCrossRef)
+
+
 }

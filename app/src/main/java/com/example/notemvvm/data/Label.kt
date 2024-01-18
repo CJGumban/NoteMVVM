@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "label_table")
 data class Label(
-    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") val id: Int,
+    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "labelId") val labelId: Int,
     @ColumnInfo(name = "label") var label: String
 ){
     constructor(label: String) : this(0,label){

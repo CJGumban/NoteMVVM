@@ -9,7 +9,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 
-import androidx.core.view.forEach
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -21,9 +20,12 @@ import com.example.notemvvm.NoteApplication
 import com.example.notemvvm.R
 import com.example.notemvvm.data.Label
 import com.example.notemvvm.data.Note
+import com.example.notemvvm.data.NoteWithLabel
+import com.example.notemvvm.data.relationship.NoteLabelCrossRef
 import com.example.notemvvm.databinding.FragmentHomeBinding
 import com.example.notemvvm.ui.main.adapter.NoteAdapter
 import com.example.notemvvm.ui.main.adapter.NoteSearchAdapter
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
@@ -44,18 +46,13 @@ class HomeFragment : Fragment() {
     }
 
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        return binding.root
+        val view = binding.root
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -66,6 +63,7 @@ class HomeFragment : Fragment() {
         val addNotes = binding.addNotesFab
         loadLabels()
         loadNotes()
+
 
 
 
@@ -161,11 +159,6 @@ class HomeFragment : Fragment() {
 
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding=null
-    }
-
     private fun loadSearchNotes(text:String = "") {
         recyclerViewSearch = binding.notesSearchviewRecyclerview
         recyclerViewSearch.layoutManager = StaggeredGridLayoutManager(2, 1)
@@ -173,7 +166,7 @@ class HomeFragment : Fragment() {
 
             viewModel.searchNotesByText(text).collect {
                 notes = it.reversed()
-                Log.i("homefragment", it.toString())
+                Log.i("testing", it.toString())
                 noteSearchAdapter = NoteSearchAdapter(notes)
                 recyclerViewSearch.adapter = noteSearchAdapter
             }
@@ -219,45 +212,57 @@ class HomeFragment : Fragment() {
         }
     }
 
-    fun loadLabels(){
-
+    // TODO: fix label
+    private fun loadLabels() {
         lifecycleScope.launch {
-            viewModel.getAllLabels().collect{
+            viewModel.getAllLabels().collect {
                 labels = it.reversed()
-                labels.forEach{
-                    var m = binding.homeNavigationdrawer.menu.add(0,it.id,0,it.label)
+                labels.forEach {label ->
+                    var m = binding.homeNavigationdrawer.menu.add(0, label.labelId, 0, label.label)
                         .setIcon(R.drawable.label_24px)
-                    Log.i("testing", "menu ${m}")
-                    m.setOnMenuItemClickListener {
-                        Log.i("testing", "menu ${it.groupId}" +
-                                "${it.itemId}" +
-                                "${it.title}" )
-                        filterNotesByLabel(it.title.toString())
+                    Log.i("testing", "menu $m")
+                    m.setOnMenuItemClickListener {menuItem->
+                        Log.i(
+                            "testing", "menu ${menuItem.groupId}" +
+                                    "${menuItem.itemId}" +
+                                    "${menuItem.title}"
+                        )
+                        filterNotesByLabel(menuItem.itemId)
                         true
                     }
-
                 }
-                }
-            }
-        binding.homeNavigationdrawer.menu.forEach {
-            Log.i("testing", "${it}")
-            it.setOnMenuItemClickListener {
-                Log.i("testing", "${it} clicked")
-                true
             }
         }
-
     }
+//this line of code gets labelId for filtering notes
+fun filterNotesByLabel(id: Int) {
+     var noteLabelCrossRef: List<NoteLabelCrossRef>
+     var filteredByLabel: List<Note>
+    //this line gets the list of crossreference of label and notes ids
+    //after that the list is filtered and will remain if the notelabelcrossref's item has the labelId required
+    //the filtered notelabelcrossref.noteId will be used to filter out notes where it will remain if the noteId /n
+    // exist in notelabelcrossref's noteids
+     lifecycleScope.launch {
+         viewModel.getAllNoteLabelCrossRef().collect { it ->
+             noteLabelCrossRef = it.filter { it.labelId == id  }
+             filteredByLabel= notes.filter {note->
+                 var pass: Boolean = false
+                 var count = 0
+                 while (count!=noteLabelCrossRef.count()&&!pass){
+                     pass=note.noteId==noteLabelCrossRef[count].noteId
+                     count++
+                 }
+                 pass
+             }
+             binding.pinnedTextview.visibility=View.GONE
+             binding.unpinnedTextview.visibility=View.GONE
+             binding.pinnedNotesRecyclerView.visibility=View.GONE
+             noteAdapter = NoteAdapter(filteredByLabel)
+             recyclerViewNotes.adapter = noteAdapter
+         }
+     }
 
-    private fun filterNotesByLabel(title: String) {
-        var filteredByLabel: List<Note> = notes?.filter {
-            it.label==title
-        }!!
-        binding.pinnedTextview.visibility=View.GONE
-        binding.unpinnedTextview.visibility=View.GONE
-        binding.pinnedNotesRecyclerView.visibility=View.GONE
-        noteAdapter = NoteAdapter(filteredByLabel)
-        recyclerViewNotes.adapter = noteAdapter
+
     }
 
     //tested recycler view with random content

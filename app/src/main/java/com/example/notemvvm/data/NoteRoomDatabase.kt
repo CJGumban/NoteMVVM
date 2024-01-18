@@ -7,13 +7,15 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.example.notemvvm.data.relationship.NoteLabelCrossRef
 
 
 @Database(entities = [
                         Note::class,
-                        Label::class
+                        Label::class,
+                        NoteLabelCrossRef::class
                      ],
-    version = 13, exportSchema = false)
+    version = 1, exportSchema = false)
 abstract class NoteRoomDatabase : RoomDatabase(){
 
     abstract fun noteDao():NoteDao
@@ -41,6 +43,7 @@ abstract class NoteRoomDatabase : RoomDatabase(){
         }
 
 
+
         //Singleton prevents multiple instances of database opening at the same time.
         @Volatile
         private var INSTANCE: NoteRoomDatabase? = null
@@ -48,15 +51,13 @@ abstract class NoteRoomDatabase : RoomDatabase(){
         fun getDatabase(context: Context): NoteRoomDatabase {
 
             //if the INSTANCE is not null, then returns it
-            //if it ism then create the database
+            //if it isn't then create the database
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     NoteRoomDatabase::class.java,
                     "note_database"
-                ).fallbackToDestructiveMigration()
-                    .addMigrations(MIGRATION_11_12, MIGRATION_12_13).
-
+                ).fallbackToDestructiveMigration().
                 build()
                 INSTANCE = instance
                 // return instance
