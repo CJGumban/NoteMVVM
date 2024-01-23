@@ -1,10 +1,8 @@
 package com.example.notemvvm.ui.main.adapter
 
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.notemvvm.R
 import com.example.notemvvm.data.Label
@@ -14,6 +12,7 @@ import com.google.android.material.textfield.TextInputLayout
 class CRUDLabelForNotesAdapter (
     private val labels: List<Label>,
     private val noteLabelCrossRefs: List<NoteLabelCrossRef>,
+    private val noteId:Int,
     private val listener: RecyclerViewEvent
 ): RecyclerView.Adapter<CRUDLabelForNotesAdapter.ViewHolder>(){
 
@@ -40,24 +39,25 @@ class CRUDLabelForNotesAdapter (
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         var currentLabel = labels[position]
-        var check = false
-        var count = 0
+        var check = noteLabelCrossRefs.contains(NoteLabelCrossRef(noteId,currentLabel.labelId))
         viewHolder.labelOutline.editText?.setText(currentLabel.label)
         viewHolder.labelOutline.editText?.isFocusable=false
-        while (!check&&noteLabelCrossRefs.size!=count){
-            check=currentLabel.labelId==noteLabelCrossRefs[count].labelId
-            count++
-        }
+
+
         if (check){
             viewHolder.labelOutline.setEndIconDrawable(R.drawable.check_box_24px)
         }else{viewHolder.labelOutline.setEndIconDrawable(R.drawable.check_box_outline_blank_24px)
         }
         viewHolder.labelOutline.editText?.setOnClickListener {
             if (check){
-                listener.removeCrossRef(noteLabelCrossRefs[count])
+                listener.removeCrossRef(NoteLabelCrossRef(noteId,currentLabel.labelId))
+                viewHolder.labelOutline.setEndIconDrawable(R.drawable.check_box_outline_blank_24px)
+                check=false
 
             }else{
-                listener.addCrossRef(currentLabel.labelId)
+                listener.addCrossRef(NoteLabelCrossRef(noteId,currentLabel.labelId))
+                viewHolder.labelOutline.setEndIconDrawable(R.drawable.check_box_24px)
+                check=true
             }
         }
 

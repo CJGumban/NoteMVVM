@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 
 class AddEditNoteFragment : Fragment() {
     private var _binding: FragmentAddEditNoteBinding? = null
-    private var note: Note? = null
+    var note: Note? = Note()
     private val args: AddEditNoteFragmentArgs by navArgs()
     private val binding get() = _binding!!
     private val viewModel: AppViewModel by activityViewModels {
@@ -42,6 +42,8 @@ class AddEditNoteFragment : Fragment() {
         if (args.noteId != 0) {
             loadNote(args.noteId)
         }
+    //   TODO() fix note implementation
+
         binding.addeditnoteTopappbar.setNavigationOnClickListener {
             noteValidation()
             view.findNavController().navigateUp()
@@ -71,15 +73,12 @@ class AddEditNoteFragment : Fragment() {
         }
 
     }
-
+//TODO: handling notes
     private fun editNoteLabel() {
-
-        //noteValidation()
        Log.i("testing", "editnotelabel() note to string ${note.toString()}")
         val action = AddEditNoteFragmentDirections.actionAddEditNoteFragmentToLabelListFragment(true,note!!.noteId)
         findNavController().navigate(action)
     }
-
 
     private fun pinNote() {
         if (note?.pinned==true){
@@ -92,8 +91,6 @@ class AddEditNoteFragment : Fragment() {
         }
         pinCheck()
     }
-
-
     private fun loadNote(noteId: Int){
         val title = binding.titleEdittext
         val body = binding.contentEdittext
@@ -103,6 +100,7 @@ class AddEditNoteFragment : Fragment() {
                 body.setText(it.body)
                 note = it
                 pinCheck()
+                viewModel.updatingNote(it)
             }
         }
 
@@ -120,50 +118,34 @@ class AddEditNoteFragment : Fragment() {
     private fun saveNote(){
         if (note==null){note= Note(false)
         }
-        var testingnotes = note.toString()
-        Log.i("testing", "addeditnotefragment $testingnotes")
         note = Note(binding.titleEdittext.text.toString(),binding.contentEdittext.text.toString(),System.currentTimeMillis(),note!!.pinned)
         viewModel.addNote(note!!)
-        testingnotes = note.toString()
-        Log.i("testing", "addeditnotefragment $testingnotes")
+
     }
 
     private fun editNote(){
         note?.title = binding.titleEdittext.text.toString()
         note?.body = binding.contentEdittext.text.toString()
         note?.timestamp = System.currentTimeMillis()
-        note?.let { viewModel.update(it) }
+        note?.let { viewModel.updateNote(it) }
     }
 
     private fun deleteNote() {
         if (note!=null) {
-            viewModel.delete(note!!)
+            viewModel.deleteNote(note!!)
         }
         findNavController().popBackStack()
     }
     private fun noteValidation(){
-
-        val valid = binding.titleEdittext.text!!.isNotEmpty()||binding.contentEdittext.text!!.isNotEmpty()
-        if (valid){
-        if (note == null||note?.noteId == 0) {
-            saveNote()
+        if (!viewModel.onEditMode()) {
+            if(binding.titleEdittext.text!!.isNotEmpty()||binding.contentEdittext.text!!.isNotEmpty()){
+                saveNote()
+            }
         } else {
             editNote()
-        }
+
         }
 
-    }
-    private fun isNoteValid():Boolean{
-
-        val valid = binding.titleEdittext.text!!.isNotEmpty()||binding.contentEdittext.text!!.isNotEmpty()
-        if (valid){
-            if (note == null||note?.noteId == 0) {
-                saveNote()
-            } else {
-                editNote()
-            }
-        }
-    return valid
     }
 
 

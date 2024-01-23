@@ -13,15 +13,15 @@ import com.example.notemvvm.ui.main.HomeFragmentDirections
 class NoteAdapter(private val note: List<Note>) :
     RecyclerView.Adapter<NoteAdapter.ViewHolder>(){
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view){
         val title: TextView
         val content: TextView
 
         init {
             title = view.findViewById(R.id.title_textview)
             content = view.findViewById(R.id.content_textview)
-        }
 
+        }
     }
 
 

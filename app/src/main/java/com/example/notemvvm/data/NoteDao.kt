@@ -5,7 +5,6 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Transaction
 import androidx.room.Update
 import com.example.notemvvm.data.relationship.NoteLabelCrossRef
 import kotlinx.coroutines.flow.Flow
@@ -22,16 +21,16 @@ interface NoteDao {
     fun getNoteById(noteId: Int): Flow<Note>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(note: Note)
+    suspend fun insertNote(note: Note)
 
     @Update
-    suspend fun update(note: Note)
+    suspend fun updateNote(note: Note)
 
     @Delete
-    suspend fun delete(markedNotes: List<Note>)
+    suspend fun deleteNote(markedNotes: List<Note>)
 
     @Delete
-    suspend fun delete(note: Note)
+    suspend fun deleteNote(note: Note)
 
 
     //labelquery
@@ -63,16 +62,19 @@ interface NoteDao {
     @Query("DELETE FROM NoteLabelCrossRef WHERE labelId = :labelId ")
     suspend fun deleteNoteLabelCrossRefByLabelId(labelId: Int)
 //Get all notes with or without label join NoteLabelCrossRef & Label table
-    @Query("SELECT note_table.noteId AS noteId, note_table.title AS title, note_table.body AS body, note_table.timestamp AS timestamp, note_table.pinned AS pinned, label_table.labelId AS labelId, label_table.label AS label FROM note_table LEFT JOIN notelabelcrossref ON notelabelcrossref.noteId = note_table.noteId LEFT JOIN label_table ON label_table.labelId = notelabelcrossref.labelId")
-    fun getAllNotes(): Flow<List<NoteWithLabel>>
 
-    @Query("SELECT note_table.noteId AS noteId, note_table.title AS title, note_table.body AS body, note_table.timestamp AS timestamp, note_table.pinned AS pinned, label_table.labelId AS labelId, label_table.label AS label FROM note_table LEFT JOIN notelabelcrossref LEFT JOIN label_table ON label_table.labelId = notelabelcrossref.labelId WHERE body LIKE '%' || :search || '%' " + "OR title LIKE '%' || :search || '%' ORDER BY timestamp ASC")
-    fun searchNoteLabels(search: String): Flow<List<NoteWithLabel>>
+    @Query("SELECT note_table.noteId AS noteId, note_table.title AS title, note_table.body AS body, note_table.timestamp AS timestamp, note_table.pinned AS pinned FROM note_table INNER JOIN notelabelcrossref ON notelabelcrossref.noteId = note_table.noteId INNER JOIN label_table ON label_table.labelId = notelabelcrossref.labelId WHERE label_table.labelId = :labelId ORDER BY timestamp ASC")
+    fun filterNoteByLabel(labelId: Int): Flow<List<Note>>
 
-/*
-    @Transaction
-    @Query("SELECT * FROM note_table WHERE label = :label")
-    suspend fun getLabelWithNotes(label: String): List<LabelWithNotes>
-*/
+
+
+
+    //@Query("SELECT note_table.noteId AS noteId, note_table.title AS title, note_table.body AS body, note_table.timestamp AS timestamp, note_table.pinned AS pinned FROM note_table LEFT JOIN notelabelcrossref ON note_table.noteId = notelabelcrossref.noteId LEFT JOIN label_table ON label_table.labelId = notelabelcrossref.labelId")
+
+    /*
+        @Transaction
+        @Query("SELECT * FROM note_table WHERE label = :label")
+        suspend fun getLabelWithNotes(label: String): List<LabelWithNotes>
+    */
 
 }

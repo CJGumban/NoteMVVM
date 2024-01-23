@@ -10,7 +10,7 @@ interface RecyclerViewEvent {
 
     fun onStartIconClick(label: Label)
     fun onEndIconClick(label: Label)
-    fun addCrossRef(labelId: Int)
+    fun addCrossRef(crossRef: NoteLabelCrossRef)
     fun removeCrossRef(crossRef: NoteLabelCrossRef)
 
 

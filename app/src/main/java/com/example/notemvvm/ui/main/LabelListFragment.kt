@@ -6,10 +6,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.view.isNotEmpty
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModel
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -36,8 +35,8 @@ class LabelListFragment : Fragment(), RecyclerViewEvent {
     private lateinit var recyclerViewLabel: RecyclerView
     private var noteLabelCrossRefs: List<NoteLabelCrossRef> = mutableListOf()
     private var labels:List<Label> = mutableListOf()
-    private var crudLabelListAdapter = CRUDLabelListAdapter(labels,this)
-    private var crudLabelForNotesAdapter = CRUDLabelForNotesAdapter(labels,noteLabelCrossRefs,this)
+    private lateinit var crudLabelListAdapter: CRUDLabelListAdapter
+    private lateinit var crudLabelForNotesAdapter: CRUDLabelForNotesAdapter
     private val args: LabelListFragmentArgs by navArgs()
     private var noteLabelCrossRefEdit: ArrayList<NoteLabelCrossRef> = arrayListOf()
 
@@ -73,10 +72,9 @@ class LabelListFragment : Fragment(), RecyclerViewEvent {
         binding.labelListTopappbar.setNavigationOnClickListener {
             if (args.noteEditMode){
                 lifecycleScope.launch {
-                    /*viewModel.deleteNoteLabelCrossRefByNoteId(args.noteId)*/
+                    viewModel.deleteNoteLabelCrossRefByNoteId(args.noteId)
                     noteLabelCrossRefEdit.forEach {
                         viewModel.addNoteLabelCrossRef(it)
-
                     }
                     findNavController().navigateUp()
                 }
@@ -126,13 +124,10 @@ class LabelListFragment : Fragment(), RecyclerViewEvent {
         recyclerViewLabel = binding.labellistRecyclerView
         recyclerViewLabel.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL,false)
         lifecycleScope.launch {
-            viewModel.getAllLabels().collect(){
+            viewModel.getAllLabels().collect {
                 labels = it.reversed()
                 Log.i("testing","labels: ${labels.toString()}")
             }
-
-
-
             Log.i("testing","labels: ${labels.toString()}" +
                     "" +
                     "notelabelscrossref ${noteLabelCrossRefs.toString()}")
@@ -140,13 +135,18 @@ class LabelListFragment : Fragment(), RecyclerViewEvent {
         }
         lifecycleScope.launch {
             viewModel.getAllNoteLabelCrossRef().collect{
-                noteLabelCrossRefs = it.reversed().filter { noteLabelCrossRefs-> noteLabelCrossRefs.noteId==noteId  }
-                Log.i("testing",
-                    "notelabelscrossref ${noteLabelCrossRefs.toString()}")
                 noteLabelCrossRefs.forEach {
                     noteLabelCrossRefEdit.add(it)
                 }
-                crudLabelForNotesAdapter = CRUDLabelForNotesAdapter(labels, noteLabelCrossRefs, this@LabelListFragment)
+/*
+                noteLabelCrossRefs = it.reversed().filter { noteLabelCrossRefs-> noteLabelCrossRefs.noteId==noteId  }
+*/
+                noteLabelCrossRefs=it
+                Log.i("testing",
+                    "notelabelscrossref ${noteLabelCrossRefs.toString()}"
+                )
+
+                crudLabelForNotesAdapter = CRUDLabelForNotesAdapter(labels, noteLabelCrossRefs,noteId, this@LabelListFragment)
                 recyclerViewLabel.adapter =  crudLabelForNotesAdapter
 
             }
@@ -169,21 +169,15 @@ class LabelListFragment : Fragment(), RecyclerViewEvent {
         }
     }
 
-    override fun addCrossRef(labelId: Int) {
-        lifecycleScope.launch {
-            noteLabelCrossRefEdit.add(NoteLabelCrossRef(args.noteId,labelId))
-            Log.i("testing","notelabelcrossrefedit : ${noteLabelCrossRefEdit.toString()}")
-
-        }
+    override fun addCrossRef(crossRef: NoteLabelCrossRef) {
+        noteLabelCrossRefEdit.add(crossRef)
 
     }
     override fun removeCrossRef(noteLabelCrossRef: NoteLabelCrossRef){
-
         noteLabelCrossRefEdit.remove(noteLabelCrossRef)
     }
 
-    override fun onItemClick(position: Int) {
-    }
+    override fun onItemClick(position: Int) {}
 
     override fun onStartIconClick(label: Label) {
         deleteLabel(label)

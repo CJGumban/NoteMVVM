@@ -7,52 +7,55 @@ import androidx.lifecycle.viewModelScope
 import com.example.notemvvm.data.Label
 import com.example.notemvvm.data.Note
 import com.example.notemvvm.data.NoteDao
-import com.example.notemvvm.data.NoteWithLabel
 import com.example.notemvvm.data.relationship.NoteLabelCrossRef
-import kotlinx.coroutines.channels.broadcast
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import java.lang.IllegalArgumentException
 
+
 class AppViewModel(private val repository: NoteDao) : ViewModel() {
-
-
-//    Using LiveData and caching what  allNotes return has several benefits:
-        /*-We can put an observer on the data(instead of polling for changes) and only
-        update the UI when the data actually changes.
-        * -repository is completely separated from the UI through the ViewModel.*/
-
+    private var _noteEditMode: Boolean? = false
+    var noteToEdit: Note? = Note()
+    private val noteEditMode get() = _noteEditMode!!
     val allNotes: Flow<List<Note>> = repository.allNotes()
+
+    fun onEditMode():Boolean{
+        return noteEditMode
+    }
+
+
+
+    fun updatingNote(note: Note){
+        _noteEditMode = true
+        this.noteToEdit = note
+    }
+
 
     fun searchNotesByText(search:String): Flow<List<Note>> = repository.searchNotes(search)
     fun addNote(note: Note){
-        insert(note)
+        insertNote(note)
     }
 
     fun getNoteById(noteId: Int): Flow<Note> {
-        return _getNoteById(noteId)
+        return repository.getNoteById(noteId)
+    }
+    fun filterNotesByLabel(labelId: Int): Flow<List<Note>>{
+        return repository.filterNoteByLabel(labelId)
     }
 
-    private fun _getNoteById(noteId: Int): Flow<Note> = repository.getNoteById(noteId)
-
-    private fun searchNoteLabels(search: String): Flow<List<NoteWithLabel>> = repository.searchNoteLabels(search)
-    /*
-    Launching a new coroutine to insert the data in a non0blocking  way
-    */
-    private fun insert(note: Note) = viewModelScope.launch {
-        repository.insert(note)
+    private fun insertNote(note: Note) = viewModelScope.launch {
+        repository.insertNote(note)
         Log.i("homeviewModel","${this}")
     }
-    fun delete(note: List<Note>) = viewModelScope.launch {
-        repository.delete(note)
-    }
-    fun delete(note: Note)= viewModelScope.launch{
-        repository.delete(note)
+    fun deleteNote(note: Note) = viewModelScope.launch{
+        _noteEditMode = false
+        noteToEdit = Note()
+        repository.deleteNote(note)
+        repository.deleteNoteLabelCrossRefByNoteId(note.noteId)
     }
 
-    fun update(note: Note) = viewModelScope.launch {
-        repository.update(note)
+    fun updateNote(note: Note) = viewModelScope.launch {
+        repository.updateNote(note)
     }
 
     //label_table functions
@@ -71,21 +74,19 @@ class AppViewModel(private val repository: NoteDao) : ViewModel() {
         repository.deleteLabel(label)
     }
 
-    fun getNoteLabels(): Flow<List<NoteWithLabel>> = repository.getAllNotes()
-
-
 //functions for NoteLabelCrossRef
     fun getAllNoteLabelCrossRef(): Flow<List<NoteLabelCrossRef>> = repository.getAllNoteLabelCrossRef()
-    suspend fun addNoteLabelCrossRef(noteLabelCrossRef: NoteLabelCrossRef) {
+    fun addNoteLabelCrossRef(noteLabelCrossRef: NoteLabelCrossRef) = viewModelScope.launch {
         repository.insertNoteLabelCrossRef(noteLabelCrossRef)
     }
 
-    suspend fun removeNoteLabelCrossRef(noteLabelCrossRef: NoteLabelCrossRef) {
-        repository.deleteNoteLabelCrossRef(noteLabelCrossRef)
+
+    suspend fun  deleteNoteLabelCrossRefByNoteId(noteId: Int) = viewModelScope.launch{
+        repository.deleteNoteLabelCrossRefByNoteId(noteId)
     }
 
-    suspend fun deleteNoteLabelCrossRefByNoteId(noteId: Int){
-        repository.deleteNoteLabelCrossRefByNoteId(noteId)
+    suspend fun deleteNoteLabelCrossRefByLabelId(labelId: Int) = viewModelScope.launch{
+        repository.deleteNoteLabelCrossRefByLabelId(labelId)
     }
 
 

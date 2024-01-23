@@ -25,15 +25,15 @@ class NoteRepository(private val noteDao: NoteDao) {
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
     suspend fun insert(note: Note) {
-        noteDao.insert(note)
+        noteDao.insertNote(note)
     }
 
     suspend fun update(note: Note) {
-        noteDao.update(note)
+        noteDao.updateNote(note)
     }
 
     suspend fun deleteNote(markedNotes: List<Note>) {
-        noteDao.delete(markedNotes)
+        noteDao.deleteNote(markedNotes)
     }
 
     suspend fun insertLabel(label: Label) {
