@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import androidx.core.view.isNotEmpty
 import androidx.recyclerview.widget.RecyclerView
 import com.example.notemvvm.R
-import com.example.notemvvm.data.Label
+import com.example.notemvvm.data.db.entities.Label
 import com.google.android.material.textfield.TextInputLayout
 
 

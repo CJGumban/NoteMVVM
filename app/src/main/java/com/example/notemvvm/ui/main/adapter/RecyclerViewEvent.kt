@@ -1,7 +1,7 @@
 package com.example.notemvvm.ui.main.adapter
 
-import com.example.notemvvm.data.Label
-import com.example.notemvvm.data.relationship.NoteLabelCrossRef
+import com.example.notemvvm.data.db.entities.Label
+import com.example.notemvvm.data.db.entities.relationship.NoteLabelCrossRef
 
 interface RecyclerViewEvent {
 

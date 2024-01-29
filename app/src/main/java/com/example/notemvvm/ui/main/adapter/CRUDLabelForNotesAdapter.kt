@@ -5,8 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.notemvvm.R
-import com.example.notemvvm.data.Label
-import com.example.notemvvm.data.relationship.NoteLabelCrossRef
+import com.example.notemvvm.data.db.entities.Label
+import com.example.notemvvm.data.db.entities.relationship.NoteLabelCrossRef
 import com.google.android.material.textfield.TextInputLayout
 
 class CRUDLabelForNotesAdapter (

@@ -1,4 +1,4 @@
-package com.example.notemvvm.data
+package com.example.notemvvm.data.db.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.PrimaryKey

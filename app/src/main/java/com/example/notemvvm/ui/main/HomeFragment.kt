@@ -14,8 +14,8 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.notemvvm.NoteApplication
 import com.example.notemvvm.R
-import com.example.notemvvm.data.Label
-import com.example.notemvvm.data.Note
+import com.example.notemvvm.data.db.entities.Label
+import com.example.notemvvm.data.db.entities.Note
 import com.example.notemvvm.databinding.FragmentHomeBinding
 import com.example.notemvvm.ui.main.adapter.NoteAdapter
 import com.google.android.material.search.SearchView
@@ -37,7 +37,7 @@ class HomeFragment : Fragment() {
     val TAG = "HomeFragment"
     private val viewModel: AppViewModel by activityViewModels{
         AppViewModel.AppViewModelFactory(
-            (activity?.application as NoteApplication).database.noteDao()
+            (activity?.application as NoteApplication).database.dao()
         )
     }
 

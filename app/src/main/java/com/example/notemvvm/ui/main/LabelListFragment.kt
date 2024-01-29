@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isNotEmpty
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -16,8 +15,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.notemvvm.NoteApplication
 import com.example.notemvvm.R
-import com.example.notemvvm.data.Label
-import com.example.notemvvm.data.relationship.NoteLabelCrossRef
+import com.example.notemvvm.data.db.entities.Label
+import com.example.notemvvm.data.db.entities.relationship.NoteLabelCrossRef
 import com.example.notemvvm.databinding.FragmentLabelListBinding
 import com.example.notemvvm.ui.main.adapter.CRUDLabelForNotesAdapter
 import com.example.notemvvm.ui.main.adapter.CRUDLabelListAdapter
@@ -42,7 +41,7 @@ class LabelListFragment : Fragment(), RecyclerViewEvent {
 
     private val viewModel: AppViewModel by activityViewModels {
         AppViewModel.AppViewModelFactory(
-            (activity?.application as NoteApplication).database.noteDao()
+            (activity?.application as NoteApplication).database.dao()
         )
     }
 

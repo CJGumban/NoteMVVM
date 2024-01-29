@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.notemvvm.R
-import com.example.notemvvm.data.Note
+import com.example.notemvvm.data.db.entities.Note
 import com.example.notemvvm.ui.main.HomeFragmentDirections
 
 class NoteAdapter(private val note: List<Note>) :

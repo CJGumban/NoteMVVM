@@ -4,34 +4,34 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.example.notemvvm.data.Label
-import com.example.notemvvm.data.Note
-import com.example.notemvvm.data.NoteDao
-import com.example.notemvvm.data.relationship.NoteLabelCrossRef
+import com.example.notemvvm.data.db.entities.Label
+import com.example.notemvvm.data.db.entities.Note
+import com.example.notemvvm.data.db.entities.relationship.NoteLabelCrossRef
+import com.example.notemvvm.data.db.repositories.NoteRepository
+import com.example.notemvvm.data.db.repositories.NoteRepositoryImpl
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.lang.IllegalArgumentException
+import javax.inject.Inject
 
 
-class AppViewModel(private val repository: NoteDao) : ViewModel() {
+class AppViewModel @Inject constructor(private val repository: NoteRepository) : ViewModel() {
+    val notes = repository.getAllNotes()
+
+
     private var _noteEditMode: Boolean? = false
     var noteToEdit: Note? = Note()
     private val noteEditMode get() = _noteEditMode!!
-    val allNotes: Flow<List<Note>> = repository.allNotes()
+    val allNotes: Flow<List<Note>> = repository.getAllNotes()
 
     fun onEditMode():Boolean{
         return noteEditMode
     }
-
-
-
     fun updatingNote(note: Note){
         _noteEditMode = true
         this.noteToEdit = note
     }
-
-
-    fun searchNotesByText(search:String): Flow<List<Note>> = repository.searchNotes(search)
+    fun searchNotesByText(search:String): Flow<List<Note>> = repository.searchNotesByText(search)
     fun addNote(note: Note){
         insertNote(note)
     }
@@ -40,7 +40,7 @@ class AppViewModel(private val repository: NoteDao) : ViewModel() {
         return repository.getNoteById(noteId)
     }
     fun filterNotesByLabel(labelId: Int): Flow<List<Note>>{
-        return repository.filterNoteByLabel(labelId)
+        return repository.filterNotesByLabel(labelId)
     }
 
     private fun insertNote(note: Note) = viewModelScope.launch {
@@ -91,12 +91,12 @@ class AppViewModel(private val repository: NoteDao) : ViewModel() {
 
 
     class AppViewModelFactory(
-        private val noteDao: NoteDao
+        private val repository: NoteRepositoryImpl
     ) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(AppViewModel::class.java)) {
                 @Suppress("UNCHECKED_CAST")
-                return AppViewModel(noteDao) as T
+                return AppViewModel(repository) as T
             }
             throw IllegalArgumentException("Unknown ViewModel class")
         }

@@ -1,4 +1,4 @@
-package com.example.notemvvm.data.relationship
+package com.example.notemvvm.data.db.entities.relationship
 
 import androidx.room.Entity
 

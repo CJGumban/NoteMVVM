@@ -6,21 +6,24 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.example.notemvvm.data.relationship.NoteLabelCrossRef
+import com.example.notemvvm.data.db.entities.Label
+import com.example.notemvvm.data.db.entities.Note
+import com.example.notemvvm.data.db.entities.relationship.NoteLabelCrossRef
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface NoteDao {
 
     @Query("SELECT * FROM note_table ORDER BY timestamp ASC")
-    fun allNotes(): Flow<List<Note>>
+    fun getAllNotes(): Flow<List<Note>>
 
     @Query("SELECT * FROM note_table WHERE body LIKE '%' || :search || '%' " + "OR title LIKE '%' || :search || '%' ORDER BY timestamp ASC")
-    fun searchNotes(search: String): Flow<List<Note>>
-    @Query("SELECT * FROM note_table WHERE noteid == :noteId")
-    fun getNoteById(noteId: Int): Flow<Note>
+    suspend fun searchNotesByText(search: String): List<Note>?
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Query("SELECT * FROM note_table WHERE noteid == :noteId")
+    suspend fun getNoteById(noteId: Int): Note?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE )
     suspend fun insertNote(note: Note)
 
     @Update
@@ -52,10 +55,10 @@ interface NoteDao {
     suspend fun insertNoteLabelCrossRef(crossRef: NoteLabelCrossRef)
 
     @Update
-    suspend fun updateNoteLabelCrossRef(crossRef: NoteLabelCrossRef)
+    suspend fun updateNoteLabelCrossRef(noteLabelCrossRef: NoteLabelCrossRef)
 
     @Delete
-    suspend fun deleteNoteLabelCrossRef(crossRef: NoteLabelCrossRef)
+    suspend fun deleteNoteLabelCrossRef(noteLabelCrossRef: NoteLabelCrossRef)
     @Query("DELETE FROM NoteLabelCrossRef WHERE noteId = :noteId ")
     suspend fun deleteNoteLabelCrossRefByNoteId(noteId: Int)
 
@@ -64,9 +67,7 @@ interface NoteDao {
 //Get all notes with or without label join NoteLabelCrossRef & Label table
 
     @Query("SELECT note_table.noteId AS noteId, note_table.title AS title, note_table.body AS body, note_table.timestamp AS timestamp, note_table.pinned AS pinned FROM note_table INNER JOIN notelabelcrossref ON notelabelcrossref.noteId = note_table.noteId INNER JOIN label_table ON label_table.labelId = notelabelcrossref.labelId WHERE label_table.labelId = :labelId ORDER BY timestamp ASC")
-    fun filterNoteByLabel(labelId: Int): Flow<List<Note>>
-
-
+    suspend fun filterNoteByLabel(labelId: Int): List<Note>?
 
 
     //@Query("SELECT note_table.noteId AS noteId, note_table.title AS title, note_table.body AS body, note_table.timestamp AS timestamp, note_table.pinned AS pinned FROM note_table LEFT JOIN notelabelcrossref ON note_table.noteId = notelabelcrossref.noteId LEFT JOIN label_table ON label_table.labelId = notelabelcrossref.labelId")

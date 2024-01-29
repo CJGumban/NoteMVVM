@@ -14,7 +14,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.notemvvm.NoteApplication
 import com.example.notemvvm.R
-import com.example.notemvvm.data.Note
+import com.example.notemvvm.data.db.entities.Note
 import com.example.notemvvm.databinding.FragmentAddEditNoteBinding
 import kotlinx.coroutines.launch
 
@@ -25,7 +25,7 @@ class AddEditNoteFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel: AppViewModel by activityViewModels {
         AppViewModel.AppViewModelFactory(
-            (activity?.application as NoteApplication).database.noteDao()
+            (activity?.application as NoteApplication).repo
         )
     }
     override fun onCreateView(

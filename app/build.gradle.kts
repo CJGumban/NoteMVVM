@@ -5,6 +5,8 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.kapt")
     id("androidx.navigation.safeargs.kotlin")
+    id("com.google.dagger.hilt.android")
+
 
 
 }
@@ -98,11 +100,14 @@ dependencies {
     //navigation drawer
     implementation ("androidx.drawerlayout:drawerlayout:1.2.0")
 
+    //hilt
+    implementation("com.google.dagger:hilt-android:2.44")
+    kapt("com.google.dagger:hilt-android-compiler:2.44")
 
 
 
 
-
-
-
+}
+kapt{
+    correctErrorTypes = true
 }

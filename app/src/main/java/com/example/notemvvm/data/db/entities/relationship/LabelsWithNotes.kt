@@ -1,10 +1,10 @@
-package com.example.notemvvm.data.relationship
+package com.example.notemvvm.data.db.entities.relationship
 
 import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
-import com.example.notemvvm.data.Label
-import com.example.notemvvm.data.Note
+import com.example.notemvvm.data.db.entities.Label
+import com.example.notemvvm.data.db.entities.Note
 
 data class LabelsWithNotes(
     @Embedded val label: Label,
