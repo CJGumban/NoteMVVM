@@ -1,10 +1,5 @@
 package com.example.notemvvm.data.db.repositories
 
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import androidx.room.Update
 import com.example.notemvvm.data.db.entities.Label
 import com.example.notemvvm.data.db.entities.Note
 import com.example.notemvvm.data.db.entities.relationship.NoteLabelCrossRef
@@ -19,7 +14,7 @@ interface NoteRepository {
 
     suspend fun getNoteById(noteId: Int): Note?
 
-    suspend fun insertNote(note: Note)
+    suspend fun upsertNote(note: Note)
 
     suspend fun updateNote(note: Note)
 
@@ -48,6 +43,6 @@ interface NoteRepository {
     suspend fun deleteNoteLabelCrossRefByLabelId(labelId: Int)
 //Get all notes with or without label join NoteLabelCrossRef & Label table
 
-    suspend fun filterNoteByLabel(labelId: Int): List<Note>?
+    suspend fun filterNoteByLabel(labelId: Int): Flow<List<Note>>
 
 }

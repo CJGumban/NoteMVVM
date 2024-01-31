@@ -28,7 +28,7 @@ class NoteRepositoryImpl(
         TODO("Not yet implemented")
     }
 
-    override suspend fun insertNote(note: Note) {
+    override suspend fun upsertNote(note: Note) {
         TODO("Not yet implemented")
     }
 
@@ -84,7 +84,7 @@ class NoteRepositoryImpl(
         TODO("Not yet implemented")
     }
 
-    override suspend fun filterNoteByLabel(labelId: Int): List<Note>? {
+    override suspend fun filterNoteByLabel(labelId: Int): Flow<List<Note>> {
         TODO("Not yet implemented")
     }
     // By default Room runs suspend queries off the main thread, therefore, we don't need to

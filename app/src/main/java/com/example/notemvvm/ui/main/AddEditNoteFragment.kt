@@ -16,6 +16,7 @@ import com.example.notemvvm.NoteApplication
 import com.example.notemvvm.R
 import com.example.notemvvm.data.db.entities.Note
 import com.example.notemvvm.databinding.FragmentAddEditNoteBinding
+import com.example.notemvvm.ui.note_list.NoteListViewModel
 import kotlinx.coroutines.launch
 
 class AddEditNoteFragment : Fragment() {
@@ -23,9 +24,9 @@ class AddEditNoteFragment : Fragment() {
     var note: Note? = Note()
     private val args: AddEditNoteFragmentArgs by navArgs()
     private val binding get() = _binding!!
-    private val viewModel: AppViewModel by activityViewModels {
-        AppViewModel.AppViewModelFactory(
-            (activity?.application as NoteApplication).repo
+    private val viewModel: NoteListViewModel by activityViewModels {
+        NoteListViewModel.AppViewModelFactory(
+            (activity?.application as NoteApplication).repository
         )
     }
     override fun onCreateView(

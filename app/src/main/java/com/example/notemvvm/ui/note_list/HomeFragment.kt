@@ -1,4 +1,4 @@
-package com.example.notemvvm.ui.main
+package com.example.notemvvm.ui.note_list
 
 import android.os.Bundle
 import android.util.Log
@@ -35,9 +35,9 @@ class HomeFragment : Fragment() {
     private var pinnedNoteAdapter = NoteAdapter(notes)
     private var noteSearchAdapter = NoteAdapter(notes)
     val TAG = "HomeFragment"
-    private val viewModel: AppViewModel by activityViewModels{
-        AppViewModel.AppViewModelFactory(
-            (activity?.application as NoteApplication).database.dao()
+    private val viewModel: NoteListViewModel by activityViewModels{
+        NoteListViewModel.AppViewModelFactory(
+            (activity?.application as NoteApplication)
         )
     }
 

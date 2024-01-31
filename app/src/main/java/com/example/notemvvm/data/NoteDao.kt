@@ -24,7 +24,7 @@ interface NoteDao {
     suspend fun getNoteById(noteId: Int): Note?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE )
-    suspend fun insertNote(note: Note)
+    suspend fun upsertNote(note: Note)
 
     @Update
     suspend fun updateNote(note: Note)

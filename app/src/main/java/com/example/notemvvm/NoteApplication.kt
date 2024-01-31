@@ -8,7 +8,6 @@ import dagger.hilt.android.HiltAndroidApp
 @HiltAndroidApp
 class NoteApplication : Application()  {
 
-    val database: NoteRoomDatabase by lazy { NoteRoomDatabase.getDatabase(this) }
-    val repository by lazy { NoteRepositoryImpl(database.dao()) }
+
 
 }

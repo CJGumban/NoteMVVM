@@ -18,6 +18,7 @@ import com.example.notemvvm.R
 import com.example.notemvvm.data.db.entities.Label
 import com.example.notemvvm.data.db.entities.relationship.NoteLabelCrossRef
 import com.example.notemvvm.databinding.FragmentLabelListBinding
+import com.example.notemvvm.ui.note_list.NoteListViewModel
 import com.example.notemvvm.ui.main.adapter.CRUDLabelForNotesAdapter
 import com.example.notemvvm.ui.main.adapter.CRUDLabelListAdapter
 import com.example.notemvvm.ui.main.adapter.RecyclerViewEvent
@@ -39,8 +40,8 @@ class LabelListFragment : Fragment(), RecyclerViewEvent {
     private val args: LabelListFragmentArgs by navArgs()
     private var noteLabelCrossRefEdit: ArrayList<NoteLabelCrossRef> = arrayListOf()
 
-    private val viewModel: AppViewModel by activityViewModels {
-        AppViewModel.AppViewModelFactory(
+    private val viewModel: NoteListViewModel by activityViewModels {
+        NoteListViewModel.AppViewModelFactory(
             (activity?.application as NoteApplication).database.dao()
         )
     }
