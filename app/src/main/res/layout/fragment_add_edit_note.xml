@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:theme="@style/AppTheme"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.main.AddEditNoteFragment"
+    tools:context=".ui.add_edit_note.AddEditNoteFragment"
     android:orientation="vertical">
 
 <androidx.coordinatorlayout.widget.CoordinatorLayout

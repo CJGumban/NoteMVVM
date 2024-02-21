@@ -12,21 +12,20 @@ interface NoteRepository {
 
     suspend fun searchNotesByText(search: String): List<Note>?
 
-    suspend fun getNoteById(noteId: Int): Note?
+    suspend fun getNoteById(noteId: Int): Note
 
-    suspend fun upsertNote(note: Note)
+
+    suspend fun insertNote(note: Note): Long
 
     suspend fun updateNote(note: Note)
 
-    suspend fun deleteNote(markedNotes: List<Note>)
-
+    suspend fun updatePinnedNote(pinned: Boolean, noteId: Int)
     suspend fun deleteNote(note: Note)
 
-
     //labelquery
-
     fun getAllLabel(): Flow<List<Label>>
-    suspend fun insertLabel(label: Label)
+    suspend fun _getAllLabel(): List<Label>
+    suspend fun upsertLabel(label: Label)
 
     suspend fun updateLabel(label: Label)
 
@@ -43,6 +42,6 @@ interface NoteRepository {
     suspend fun deleteNoteLabelCrossRefByLabelId(labelId: Int)
 //Get all notes with or without label join NoteLabelCrossRef & Label table
 
-    suspend fun filterNoteByLabel(labelId: Int): Flow<List<Note>>
+    suspend fun filterNotesByLabel(labelId: Int): List<Note>?
 
 }

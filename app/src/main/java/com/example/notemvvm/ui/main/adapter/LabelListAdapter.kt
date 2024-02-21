@@ -7,42 +7,33 @@ import android.view.View
 import android.view.ViewGroup
 
 import androidx.core.view.isNotEmpty
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.notemvvm.R
 import com.example.notemvvm.data.db.entities.Label
 import com.google.android.material.textfield.TextInputLayout
 
 
-class CRUDLabelListAdapter(
-    private val label: List<Label>,
-    private val listener: RecyclerViewEvent
-): RecyclerView.Adapter<CRUDLabelListAdapter.ViewHolder>(){
-
-    inner class ViewHolder(
-        view: View) : RecyclerView.ViewHolder(view){
-
-
-        var labelOutline: TextInputLayout
-
-        init {
-
-            //labelEditText = view.findViewById(R.id.label_edittext)
-            labelOutline = view.findViewById(R.id.label_row_outlinedTextField)
-
-
-
+class LabelListAdapter(
+    private val listener: LabelRecyclerViewEvent
+): RecyclerView.Adapter<LabelListAdapter.ViewHolder>(){
+    private val differCallback = object : DiffUtil.ItemCallback<Label>(){
+        override fun areItemsTheSame(oldItem: Label, newItem: Label): Boolean {
+            return oldItem.labelId == newItem.labelId
         }
 
-       /* override fun onClick(v: View?) {
-
-
-            val position = absoluteAdapterPosition
-            if (position !=RecyclerView.NO_POSITION) {
-                listener.onItemClick(position)
-            }
-            Log.i("Testing", "adapter label position: $position")
-        }*/
-
+        override fun areContentsTheSame(oldItem: Label, newItem: Label): Boolean {
+            return oldItem == newItem
+        }
+    }
+    val differ = AsyncListDiffer(this,differCallback)
+    inner class ViewHolder(
+        view: View) : RecyclerView.ViewHolder(view){
+        var labelOutline: TextInputLayout
+        init {
+            labelOutline = view.findViewById(R.id.label_row_outlinedTextField)
+        }
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
@@ -50,11 +41,8 @@ class CRUDLabelListAdapter(
             .inflate(R.layout.label_row_item,viewGroup,false)
         return ViewHolder(view)
     }
-
-
-
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        var currentLabel = label[position]
+        var currentLabel = differ.currentList[position]
         viewHolder.labelOutline.editText?.setText(currentLabel.label)
         viewHolder.labelOutline.editText?.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus){
@@ -65,7 +53,7 @@ class CRUDLabelListAdapter(
                         Log.i("testing", "viewholder " +
                                 "postition $position" +
                                 "end icon pressed")
-                        currentLabel = Label(currentLabel.labelId,viewHolder.labelOutline.editText?.text.toString())
+                        currentLabel = currentLabel.copy(label = viewHolder.labelOutline.editText!!.text.toString())
                         listener.onEndIconClick(currentLabel)
                         viewHolder.labelOutline.editText!!.clearFocus()
                     }
@@ -82,7 +70,6 @@ class CRUDLabelListAdapter(
                     }
                 }
             }else{
-                label[position].label
                 viewHolder.labelOutline.editText?.setText(currentLabel.label)
                 viewHolder.labelOutline.setStartIconDrawable(R.drawable.label_24px)
                 viewHolder.labelOutline.setEndIconDrawable(R.drawable.edit_24px)
@@ -95,7 +82,7 @@ class CRUDLabelListAdapter(
 
 
 
-    override fun getItemCount() = label.size
+    override fun getItemCount() = differ.currentList.size
 
 
 

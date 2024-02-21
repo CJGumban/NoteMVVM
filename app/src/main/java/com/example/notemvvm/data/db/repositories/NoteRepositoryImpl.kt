@@ -1,8 +1,6 @@
 package com.example.notemvvm.data.db.repositories
 
-import androidx.annotation.WorkerThread
 import com.example.notemvvm.data.NoteDao
-import com.example.notemvvm.data.NoteRoomDatabase
 import com.example.notemvvm.data.db.entities.Label
 import com.example.notemvvm.data.db.entities.Note
 import com.example.notemvvm.data.db.entities.relationship.NoteLabelCrossRef
@@ -19,74 +17,78 @@ class NoteRepositoryImpl(
 
     // Room executes all the queries on a separate thread.
     // Observed Flow will notify the observer when the data has changed.
-    override fun getAllNotes(): Flow<List<Note>> = noteDao.getAllNotes()
-    override suspend fun searchNotesByText(search: String): List<Note>? {
-        TODO("Not yet implemented")
+    override fun getAllNotes(): Flow<List<Note>> { return noteDao.getAllNotes() }
+    override suspend fun searchNotesByText(search: String): List<Note> {
+        return noteDao.searchNotesByText(search)
     }
 
-    override suspend fun getNoteById(noteId: Int): Note? {
-        TODO("Not yet implemented")
+    override suspend fun getNoteById(noteId: Int): Note {
+        return noteDao.getNoteById(noteId)
     }
 
-    override suspend fun upsertNote(note: Note) {
-        TODO("Not yet implemented")
+
+    override suspend fun insertNote(note: Note): Long {
+        return noteDao.insertNote(note)
     }
 
     override suspend fun updateNote(note: Note) {
-        TODO("Not yet implemented")
+        noteDao.updateNote(note)
     }
 
-    override suspend fun deleteNote(markedNotes: List<Note>) {
-        TODO("Not yet implemented")
+    override suspend fun updatePinnedNote(pinned: Boolean, noteId: Int){
+        noteDao.updatePinnedNote(pinned,noteId)
     }
 
     override suspend fun deleteNote(note: Note) {
-        TODO("Not yet implemented")
+        noteDao.deleteNote(note)
     }
 
     override fun getAllLabel(): Flow<List<Label>> {
-        TODO("Not yet implemented")
+        return noteDao.getAllLabel()
     }
 
-    override suspend fun insertLabel(label: Label) {
-        TODO("Not yet implemented")
+    override suspend fun _getAllLabel(): List<Label> {
+        return noteDao._getAllLabel()
+    }
+
+    override suspend fun upsertLabel(label: Label) {
+        noteDao.upsertLabel(label)
     }
 
     override suspend fun updateLabel(label: Label) {
-        TODO("Not yet implemented")
+        noteDao.updateLabel(label)
     }
 
     override suspend fun deleteLabel(label: Label) {
-        TODO("Not yet implemented")
+        noteDao.deleteLabel(label)
     }
 
     override fun getAllNoteLabelCrossRef(): Flow<List<NoteLabelCrossRef>> {
-        TODO("Not yet implemented")
+    return noteDao.getAllNoteLabelCrossRef()
     }
 
     override suspend fun insertNoteLabelCrossRef(crossRef: NoteLabelCrossRef) {
-        TODO("Not yet implemented")
+        noteDao.insertNoteLabelCrossRef(crossRef)
     }
 
     override suspend fun updateNoteLabelCrossRef(noteLabelCrossRef: NoteLabelCrossRef) {
-        TODO("Not yet implemented")
+        noteDao.updateNoteLabelCrossRef(noteLabelCrossRef)
     }
 
     override suspend fun deleteNoteLabelCrossRef(noteLabelCrossRef: NoteLabelCrossRef) {
-        TODO("Not yet implemented")
+        noteDao.deleteNoteLabelCrossRef(noteLabelCrossRef)
     }
 
     override suspend fun deleteNoteLabelCrossRefByNoteId(noteId: Int) {
-        TODO("Not yet implemented")
+        noteDao.deleteNoteLabelCrossRefByNoteId(noteId)
     }
 
     override suspend fun deleteNoteLabelCrossRefByLabelId(labelId: Int) {
-        TODO("Not yet implemented")
+        noteDao.deleteNoteLabelCrossRefByLabelId(labelId)
     }
 
-    override suspend fun filterNoteByLabel(labelId: Int): Flow<List<Note>> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun filterNotesByLabel(labelId: Int): List<Note> {
+    return noteDao.filterNotesByLabel(labelId)}
     // By default Room runs suspend queries off the main thread, therefore, we don't need to
     // implement anything else to ensure we're not doing long running database work
     // off the main thread.

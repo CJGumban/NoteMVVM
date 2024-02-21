@@ -1,8 +1,6 @@
 package com.example.notemvvm.data
 
-import android.content.Context
 import androidx.room.Database
-import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.notemvvm.data.db.entities.Label
 import com.example.notemvvm.data.db.entities.Note
@@ -17,7 +15,7 @@ import com.example.notemvvm.data.db.entities.relationship.NoteLabelCrossRef
     version = 2, exportSchema = false)
 abstract class NoteRoomDatabase : RoomDatabase(){
 
-    abstract val dao:NoteDao
+    abstract val noteDao:NoteDao
 
    /* companion object{
         //Singleton prevents multiple instances of database opening at the same time.

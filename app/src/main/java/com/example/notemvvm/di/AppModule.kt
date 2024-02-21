@@ -21,12 +21,15 @@ object AppModule {
             app,
             NoteRoomDatabase::class.java,
             "note_database"
-        ).build()
+        ).fallbackToDestructiveMigration().build()
     }
 
     @Provides
     @Singleton
     fun provideNoteRepository(db: NoteRoomDatabase): NoteRepository{
-        return NoteRepositoryImpl(db.dao)
+        return NoteRepositoryImpl(db.noteDao)
     }
+
+
+
 }

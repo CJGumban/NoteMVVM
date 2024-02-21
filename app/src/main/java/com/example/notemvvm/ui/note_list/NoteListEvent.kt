@@ -1,14 +1,13 @@
 package com.example.notemvvm.ui.note_list
 
-import com.example.notemvvm.data.db.entities.Note
+import com.example.notemvvm.data.db.entities.Label
 
 sealed class NoteListEvent {
 
-
-    data class OnNoteClick(val note: Note): NoteListEvent()
-    object OnAddNoteClick: NoteListEvent()
-
-    data class OnSearchNoteByText(val text: String): NoteListEvent()
-    data class OnLabelClick(val labelId: Int): NoteListEvent()
-    object OnAddLabelClick: NoteListEvent()
+    data class OnSearchTextChange(val text: String): NoteListEvent()
+    object OnSearchViewOpened: NoteListEvent()
+    object OnSearchViewClosed: NoteListEvent()
+    data class OnLabelClick(val label: Label): NoteListEvent()
+    object OnShowAllNotes: NoteListEvent()
+    object OnOffFilterByLabel: NoteListEvent()
 }

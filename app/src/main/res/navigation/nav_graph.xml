@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--suppress NavigationFile -->
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -24,7 +25,7 @@
     </fragment>
     <fragment
         android:id="@+id/addEditNoteFragment"
-        android:name="com.example.notemvvm.ui.main.AddEditNoteFragment"
+        android:name="com.example.notemvvm.ui.add_edit_note.AddEditNoteFragment"
         android:label="fragment_add_edit_note"
         tools:layout="@layout/fragment_add_edit_note" >
         <action
@@ -37,16 +38,16 @@
         <action
             android:id="@+id/action_addEditNoteFragment_to_labelListFragment"
             app:destination="@id/labelListFragment" />
+        <argument
+            android:name="aELabelMode"
+            app:argType="boolean"
+            android:defaultValue="true" />
     </fragment>
     <fragment
         android:id="@+id/labelListFragment"
-        android:name="com.example.notemvvm.ui.main.LabelListFragment"
+        android:name="com.example.notemvvm.ui.label_list.LabelListFragment"
         android:label="fragment_label_list"
         tools:layout="@layout/fragment_label_list" >
-        <argument
-            android:name="noteEditMode"
-            app:argType="boolean"
-            android:defaultValue="false" />
         <argument
             android:name="noteId"
             app:argType="integer"

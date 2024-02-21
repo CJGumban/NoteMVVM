@@ -13,4 +13,6 @@ data class Label(
         this.label = label
     }
 
+    constructor() : this(0,"")
+
 }

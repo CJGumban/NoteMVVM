@@ -1,15 +1,12 @@
 package com.example.notemvvm
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.view.ActionMode
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import com.example.notemvvm.data.NoteDao
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
 

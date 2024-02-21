@@ -2,134 +2,130 @@ package com.example.notemvvm.ui.note_list
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.notemvvm.data.db.entities.Label
-import com.example.notemvvm.data.db.entities.Note
-import com.example.notemvvm.data.db.entities.relationship.NoteLabelCrossRef
 import com.example.notemvvm.data.db.repositories.NoteRepository
-import com.example.notemvvm.data.db.repositories.NoteRepositoryImpl
-import com.example.notemvvm.util.Routes
-import com.example.notemvvm.util.UiEvent
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.receiveAsFlow
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.lang.IllegalArgumentException
 import javax.inject.Inject
 
-
+@HiltViewModel
 class NoteListViewModel @Inject constructor(private val repository: NoteRepository) : ViewModel() {
-    val notes = repository.getAllNotes()
+    private val _uiState = MutableStateFlow(NotesUiState())
+    val uiState:StateFlow<NotesUiState> = _uiState.asStateFlow()
+companion object{
+    const val TAG = "NoteListViewModel"
+}
 
-    private val _uiEvent = Channel<UiEvent>()
-    val uiEvent = _uiEvent.receiveAsFlow()
+    init {
+        viewModelScope.launch {
+            repository.getAllNotes().collect { notes ->
+                Log.i(TAG, "init getAllNotes $notes")
+                _uiState.update {
+                    it.copy(notes = notes)
+                }
+            }
+        }
+        viewModelScope.launch {
+            repository.getAllLabel().collect { labels ->
+                Log.i(TAG, "init getAllLabels $labels")
+                _uiState.update {
+                    it.copy(labelItems = labels)
+                }
+            }
+        }
+
+    }
+
+    private fun filterNotesByLabel(label: Label) {
+        viewModelScope.launch {
+            repository.filterNotesByLabel(label.labelId).let { notes ->
+                _uiState.update {
+                    it.copy(
+                        searchMode = false,
+                        filterByLabelMode = true,
+                        notes = notes,
+                        message = "Label: ${label.label}"
+                    )
+                }
+            }
+
+        }
+    }
+
+    private fun searchNotesByText(text: String) {
+        viewModelScope.launch {
+            repository.searchNotesByText(text).let { notes ->
+                _uiState.update {
+                    it.copy(
+                        notes = notes
+                    )
+                }
+            }
+        }
+    }
+    private fun getAllNotes() {
+        Log.i(TAG, "get all notes triggered")
+        _uiState.update {
+            it.copy(
+                searchMode = false,
+                filterByLabelMode = false,
+            )
+        }
+        viewModelScope.launch {
+            repository.getAllNotes().collect { notes ->
+                _uiState.update {
+                    it.copy(
+                        notes = notes
+                    )
+                }
+            }
+        }
+    }
 
     fun onEvent(event: NoteListEvent) {
-        when(event) {
-            is NoteListEvent.OnAddLabelClick -> {
-                sendUiEvent(UiEvent.Navigate(Routes.ADD_EDIT_NOTE))
-            }
-            is NoteListEvent.OnAddNoteClick -> {
-                sendUiEvent(UiEvent.Navigate(Routes.ADD_EDIT_NOTE))
-            }
+
+        when (event) {
             is NoteListEvent.OnLabelClick -> {
-                TODO()
+                filterNotesByLabel(event.label)
             }
-            is NoteListEvent.OnNoteClick -> {
-                sendUiEvent(UiEvent.Navigate(Routes.ADD_EDIT_NOTE + "?noteId=${event.note.noteId}"))
+
+            is NoteListEvent.OnSearchTextChange -> {
+                searchNotesByText(event.text)
             }
-            is NoteListEvent.OnSearchNoteByText -> {
-                TODO()
+
+            is NoteListEvent.OnShowAllNotes -> {
+                _uiState.update {
+                    it.copy(
+                        message = "All Notes"
+                    )
+                }
+                getAllNotes()
+            }
+
+            NoteListEvent.OnSearchViewClosed -> {
+                getAllNotes()
+                _uiState.update { it.copy(searchMode = false) }
+            }
+
+            NoteListEvent.OnSearchViewOpened -> {
+                _uiState.update { it.copy(searchMode = true, filterByLabelMode = false) }
+            }
+
+            NoteListEvent.OnOffFilterByLabel -> {
+                _uiState.update { it.copy(filterByLabelMode = false) }
             }
         }
     }
 
-    private fun sendUiEvent(event: UiEvent) {
-        viewModelScope.launch {
-            _uiEvent.send(event)
-        }
-    }
-    private var _noteEditMode: Boolean? = false
-    var noteToEdit: Note? = Note()
-    private val noteEditMode get() = _noteEditMode!!
-    val allNotes: Flow<List<Note>> = repository.getAllNotes()
 
-    fun onEditMode():Boolean{
-        return noteEditMode
-    }
-    fun updatingNote(note: Note){
-        _noteEditMode = true
-        this.noteToEdit = note
-    }
-    suspend fun searchNotesByText(search:String): List<Note>? = repository.searchNotesByText(search)
-    fun addNote(note: Note){
-        insertNote(note)
-    }
-
-    suspend fun getNoteById(noteId: Int): Note? {
-        return repository.getNoteById(noteId)
-    }
-    fun filterNotesByLabel(labelId: Int): Flow<List<Note>>{
-        return repository.filterNotesByLabel(labelId)
-    }
-
-    private fun insertNote(note: Note) = viewModelScope.launch {
-        repository.upsertNote(note)
-        Log.i("homeviewModel","${this}")
-    }
-    fun deleteNote(note: Note) = viewModelScope.launch{
-        _noteEditMode = false
-        noteToEdit = Note()
-        repository.deleteNote(note)
-        repository.deleteNoteLabelCrossRefByNoteId(note.noteId)
-    }
-
-    fun updateNote(note: Note) = viewModelScope.launch {
-        repository.updateNote(note)
-    }
-
-    //label_table functions
-
-    fun getAllLabels(): Flow<List<Label>> = repository.getAllLabel()
-
-    fun insertLabel(label: Label) = viewModelScope.launch {
-        repository.insertLabel(label)
-
-    }
-
-    fun updateLabel(label: Label) = viewModelScope.launch{
-        repository.updateLabel(label)
-    }
-    fun deleteLabel(label: Label) = viewModelScope.launch {
-        repository.deleteLabel(label)
-    }
-
-//functions for NoteLabelCrossRef
-    fun getAllNoteLabelCrossRef(): Flow<List<NoteLabelCrossRef>> = repository.getAllNoteLabelCrossRef()
-    fun addNoteLabelCrossRef(noteLabelCrossRef: NoteLabelCrossRef) = viewModelScope.launch {
-        repository.insertNoteLabelCrossRef(noteLabelCrossRef)
-    }
-
-
-    suspend fun  deleteNoteLabelCrossRefByNoteId(noteId: Int) = viewModelScope.launch{
-        repository.deleteNoteLabelCrossRefByNoteId(noteId)
-    }
-
-    suspend fun deleteNoteLabelCrossRefByLabelId(labelId: Int) = viewModelScope.launch{
-        repository.deleteNoteLabelCrossRefByLabelId(labelId)
-    }
-
-
-    class AppViewModelFactory(
-        private val repository: NoteRepositoryImpl
-    ) : ViewModelProvider.Factory {
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(NoteListViewModel::class.java)) {
-                @Suppress("UNCHECKED_CAST")
-                return NoteListViewModel(repository) as T
-            }
-            throw IllegalArgumentException("Unknown ViewModel class")
+    fun snackBarShowed() {
+        _uiState.update {
+            it.copy(message = null)
         }
     }
 
