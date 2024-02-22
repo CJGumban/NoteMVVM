@@ -63,6 +63,7 @@ class HomeFragment : Fragment(), NoteRecycleViewEventInterface {
                     Log.i(TAG,"noteUiState.collect searchmode ${noteUiState.searchMode}")
                     Log.i(TAG,"noteUiState.collect filterbyLabel${noteUiState.filterByLabelMode}")
                     Log.i(TAG,"noteUiState.collect message${noteUiState.message}")
+                    Log.i(TAG,"noteUiState.collect message${noteUiState.notes}")
                     if (noteUiState.searchMode){
                         noteAdapter = NoteAdapter(this@HomeFragment)
                         recyclerViewSearch.adapter=noteAdapter
@@ -127,7 +128,6 @@ class HomeFragment : Fragment(), NoteRecycleViewEventInterface {
         }
         addNotesFab.setOnClickListener {
             viewModel.onEvent(NoteListEvent.OnOffFilterByLabel)
-
             findNavController().navigate(R.id.action_homeFragment_to_addEditNoteFragment)
         }
         binding.homeNavigationdrawer.setNavigationItemSelectedListener { menuItem ->
@@ -173,7 +173,6 @@ class HomeFragment : Fragment(), NoteRecycleViewEventInterface {
             menu.removeItem(label.labelId)
             var menuItem = menu.add(0, label.labelId, 0, label.label)
                 .setIcon(R.drawable.label_24px)
-            Log.i(TAG, "menuItem  ${menuItem.itemId}")
             menuItem.setOnMenuItemClickListener { menuItem->
                 viewModel.onEvent(NoteListEvent.OnLabelClick(Label(menuItem.itemId,menuItem.title.toString())))
                 binding.homeFragment.close()

@@ -19,7 +19,7 @@ class AddEditNoteViewModel @Inject constructor(private val repository: NoteRepos
     val uiState: StateFlow<AddEditNoteUiState> = _uiState.asStateFlow()
 
 
-    suspend fun start(noteId: Int){
+    suspend fun loadNote(noteId: Int){
         if (noteId==0){
             newNote = true
         }
@@ -39,7 +39,9 @@ class AddEditNoteViewModel @Inject constructor(private val repository: NoteRepos
 
         if (newNote) {
             if (note.title.isNotEmpty() || note.body.isNotEmpty()) {
-                return repository.insertNote(note).toInt()
+                val currentNote = note.copy(noteId = repository.insertNote(note).toInt())
+                loadNote(currentNote.noteId)
+                return currentNote.noteId
             }
         } else {
             repository.updateNote(note)

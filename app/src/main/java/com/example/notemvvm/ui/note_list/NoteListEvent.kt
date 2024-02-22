@@ -10,4 +10,5 @@ sealed class NoteListEvent {
     data class OnLabelClick(val label: Label): NoteListEvent()
     object OnShowAllNotes: NoteListEvent()
     object OnOffFilterByLabel: NoteListEvent()
+
 }

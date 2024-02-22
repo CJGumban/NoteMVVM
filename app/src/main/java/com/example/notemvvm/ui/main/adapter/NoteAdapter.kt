@@ -42,8 +42,6 @@ class NoteAdapter(private val listener: NoteRecycleViewEventInterface) :
         viewholder.content.text = note.body
         viewholder.itemView.setOnClickListener {
             listener.onItemClick(note.noteId)
-            /*val action = HomeFragmentDirections.actionHomeFragmentToAddEditNoteFragment(notes[position].noteId)
-            viewholder.itemView.findNavController().navigate(action)*/
         }
     }
     override fun getItemCount(): Int{

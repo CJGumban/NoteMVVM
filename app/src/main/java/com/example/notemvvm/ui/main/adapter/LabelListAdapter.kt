@@ -1,7 +1,6 @@
 package com.example.notemvvm.ui.main.adapter
 
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -50,9 +49,6 @@ class LabelListAdapter(
                 viewHolder.labelOutline.setEndIconDrawable(R.drawable.done_24px)
                 viewHolder.labelOutline.setEndIconOnClickListener {
                     if (viewHolder.labelOutline.editText!!.isFocused&&viewHolder.labelOutline.isNotEmpty()){
-                        Log.i("testing", "viewholder " +
-                                "postition $position" +
-                                "end icon pressed")
                         currentLabel = currentLabel.copy(label = viewHolder.labelOutline.editText!!.text.toString())
                         listener.onEndIconClick(currentLabel)
                         viewHolder.labelOutline.editText!!.clearFocus()
@@ -61,9 +57,6 @@ class LabelListAdapter(
 
                 viewHolder.labelOutline.setStartIconOnClickListener {
                     if (viewHolder.labelOutline.editText!!.isFocused){
-                        Log.i("testing", "viewholder " +
-                                "postition $position" +
-                                "start icon pressed")
                         listener.onStartIconClick(currentLabel)
                         viewHolder.labelOutline.editText!!.clearFocus()
 

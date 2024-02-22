@@ -23,10 +23,7 @@ import com.example.notemvvm.ui.main.adapter.NoteLabelCrossRefListAdapter
 import com.example.notemvvm.ui.main.adapter.LabelListAdapter
 import com.example.notemvvm.ui.main.adapter.LabelRecyclerViewEvent
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-
-import kotlin.Exception
 
 @AndroidEntryPoint
 
@@ -39,7 +36,6 @@ class LabelListFragment : Fragment(), LabelRecyclerViewEvent {
     private lateinit var labelListAdapter: LabelListAdapter
     private lateinit var noteLabelCrossRefListAdapter: NoteLabelCrossRefListAdapter
     private val args: LabelListFragmentArgs by navArgs()
-    private var noteLabelCrossRefEdit: ArrayList<NoteLabelCrossRef> = arrayListOf()
     private val viewModel: LabelListViewModel by viewModels()
 
     override fun onCreateView(
@@ -83,7 +79,15 @@ class LabelListFragment : Fragment(), LabelRecyclerViewEvent {
 
 
         binding.labelListTopappbar.setNavigationOnClickListener {
-            findNavController().navigateUp()
+            if(args.noteId==0){
+                findNavController().navigateUp()
+            } else{
+                findNavController().navigate(
+                    LabelListFragmentDirections.actionLabelListFragmentToAddEditNoteFragment(
+                        args.noteId
+                    )
+                )
+            }
 
         }
 
@@ -118,41 +122,6 @@ class LabelListFragment : Fragment(), LabelRecyclerViewEvent {
             }
         }
     }
-
-    /*private fun editNoteWithLabels(noteId: Int) {
-
-        recyclerViewLabel = binding.labellistRecyclerView
-        recyclerViewLabel.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL,false)
-        lifecycleScope.launch {
-            viewModel.getAllLabels().collect {
-                labels = it.reversed()
-                Log.i("testing","labels: ${labels.toString()}")
-            }
-            Log.i("testing","labels: ${labels.toString()}" +
-                    "" +
-                    "notelabelscrossref ${noteLabelCrossRefs.toString()}")
-
-        }
-        lifecycleScope.launch {
-            viewModel.getAllNoteLabelCrossRef().collect{
-                noteLabelCrossRefs.forEach {
-                    noteLabelCrossRefEdit.add(it)
-                }
-
-                noteLabelCrossRefs = it.reversed().filter { noteLabelCrossRefs-> noteLabelCrossRefs.noteId==noteId  }
-
-                noteLabelCrossRefs=it
-                Log.i("testing",
-                    "notelabelscrossref ${noteLabelCrossRefs.toString()}"
-                )
-
-                crudLabelForNotesAdapter = CRUDLabelForNotesAdapter(labels, noteLabelCrossRefs,noteId, this@LabelListFragment)
-                recyclerViewLabel.adapter =  crudLabelForNotesAdapter
-
-            }
-        }
-
-    }*/
 
     override fun addCrossRef(label: Label) {
         viewModel.insertNoteLabelCrossRef(NoteLabelCrossRef(args.noteId,label.labelId))

@@ -33,7 +33,7 @@ class AddEditNoteFragment : Fragment() {
     private val viewModel: AddEditNoteViewModel by viewModels()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentAddEditNoteBinding.inflate(inflater, container, false)
         return binding.root
@@ -44,10 +44,10 @@ class AddEditNoteFragment : Fragment() {
         val titleEditText = binding.titleEdittext
         val contentEditText = binding.contentEdittext
         pinButton = binding.addeditnoteTopappbar.menu[1]
-        viewModel.viewModelScope.launch { viewModel.start(args.noteId) }
+        viewModel.viewModelScope.launch { viewModel.loadNote(args.noteId) }
 
 
-        viewLifecycleOwner.lifecycleScope.launch{
+        viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { uiState ->
                     titleEditText.setText(uiState.note.title)
@@ -63,10 +63,12 @@ class AddEditNoteFragment : Fragment() {
                 titleEditText.text.toString(),
                 contentEditText.text.toString(),
                 System.currentTimeMillis(),
-                isPinned)
-            Log.i(TAG,"${note}")
+                isPinned
+            )
+
+            Log.i(TAG, "${note}")
             viewModel.viewModelScope.launch {
-              Log.i(TAG, "viewmodel saved NoteId ${viewModel.saveNote(note)}")
+                Log.i(TAG, "viewmodel saved NoteId ${viewModel.saveNote(note)}")
                 view.findNavController().navigateUp()
             }
         }
@@ -74,7 +76,7 @@ class AddEditNoteFragment : Fragment() {
         binding.addeditnoteTopappbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.label -> {
-                   editNoteLabel()
+                    editNoteLabel()
                     true
                 }
 
@@ -91,6 +93,7 @@ class AddEditNoteFragment : Fragment() {
 
                     true
                 }
+
                 else -> super.onContextItemSelected(it)
 
             }
@@ -103,14 +106,15 @@ class AddEditNoteFragment : Fragment() {
     private fun loadPinIcon() {
         val pinned = R.drawable.push_pin_filled_24px
         val unpinned = R.drawable.push_pin_24px
-         if (isPinned){
-         pinButton.setIcon(pinned)
-        }else {
+        if (isPinned) {
+            pinButton.setIcon(pinned)
+        } else {
             pinButton.setIcon(unpinned)
         }
     }
+
     private fun pinClick() {
-        isPinned=!isPinned
+        isPinned = !isPinned
         loadPinIcon()
     }
 
@@ -120,25 +124,34 @@ class AddEditNoteFragment : Fragment() {
             binding.titleEdittext.text.toString(),
             binding.contentEdittext.text.toString(),
             System.currentTimeMillis(),
-            isPinned)
-        Log.i(TAG,"${note}")
+            isPinned
+        )
 
-        if (note.noteId==0){
-            if (note.title.isEmpty()&&note.body.isEmpty()){
-                Snackbar.make(requireView(),"Do not leave the Title and Note empty.",Snackbar.LENGTH_SHORT).show()
-            }else{
+        if (note.noteId == 0) {
+            if (note.title.isEmpty() && note.body.isEmpty()) {
+                Snackbar.make(
+                    requireView(),
+                    "Do not leave the Title and Note empty.",
+                    Snackbar.LENGTH_SHORT
+                ).show()
+            } else {
                 viewModel.viewModelScope.launch {
-                val noteId = viewModel.saveNote(note)
-                val action = AddEditNoteFragmentDirections.actionAddEditNoteFragmentToLabelListFragment(
-                    noteId)
-                findNavController().navigate(action)
-            }}
+                    val noteId = viewModel.saveNote(note)
+                    val action =
+                        AddEditNoteFragmentDirections.actionAddEditNoteFragmentToLabelListFragment(
+                            noteId
+                        )
+                    findNavController().navigate(action)
+                }
+            }
 
-        }else{
+        } else {
             viewModel.viewModelScope.launch {
                 viewModel.saveNote(note)
-                val action = AddEditNoteFragmentDirections.actionAddEditNoteFragmentToLabelListFragment(
-                    args.noteId)
+                val action =
+                    AddEditNoteFragmentDirections.actionAddEditNoteFragmentToLabelListFragment(
+                        args.noteId
+                    )
                 findNavController().navigate(action)
             }
         }
@@ -152,11 +165,8 @@ class AddEditNoteFragment : Fragment() {
     }
 
 
-
-
-
-companion object{
-    const val TAG = "AddEditNoteFragment"
-}
+    companion object {
+        const val TAG = "AddEditNoteFragment"
+    }
 
 }
