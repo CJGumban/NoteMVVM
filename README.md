@@ -20,42 +20,42 @@
 
 ### User Interface
 <p align="center">
-  <img src="https://github.com/CJGumban/NoteMVVM/blob/mvvm_views/app/sample/notes%20(1).gif" width="20%">
+  <img src="https://github.com/CJGumban/NoteMVVM/blob/mvvm_views_with_di_and_flows/app/sample/notes%20(1).gif" width="20%">
 </p>
 
 <p align="center">
-  <img src="https://github.com/CJGumban/NoteMVVM/blob/mvvm_views/app/sample/notes%20(2).gif" width="20%">
+  <img src="https://github.com/CJGumban/NoteMVVM/blob/mvvm_views_with_di_and_flows/app/sample/notes%20(2).gif" width="20%">
 </p>
 
 <p align="center">
-  <img src="https://github.com/CJGumban/NoteMVVM/blob/mvvm_views/app/sample/notes%20(3).gif" width="20%">
+  <img src="https://github.com/CJGumban/NoteMVVM/blob/mvvm_views_with_di_and_flows/app/sample/notes%20(3).gif" width="20%">
 </p>
 
 <p align="center">
-  <img src="https://github.com/CJGumban/NoteMVVM/blob/mvvm_views/app/sample/notes%20(1).png" width="20%">
+  <img src="https://github.com/CJGumban/NoteMVVM/blob/mvvm_views_with_di_and_flows/app/sample/notes%20(1).png" width="20%">
   &nbsp; &nbsp; &nbsp; &nbsp;
-  <img src="https://github.com/CJGumban/NoteMVVM/blob/mvvm_views/app/sample/notes%20(2).png" width="20%">
+  <img src="https://github.com/CJGumban/NoteMVVM/blob/mvvm_views_with_di_and_flows/app/sample/notes%20(2).png" width="20%">
   &nbsp; &nbsp; &nbsp; &nbsp;
-  <img src="https://github.com/CJGumban/NoteMVVM/blob/mvvm_views/app/sample/notes%20(3).png" width="20%">
+  <img src="https://github.com/CJGumban/NoteMVVM/blob/mvvm_views_with_di_and_flows/app/sample/notes%20(3).png" width="20%">
 </p>
 
 <p align="center">
-  <img src="https://github.com/CJGumban/NoteMVVM/blob/mvvm_views/app/sample/notes%20(4).png" width="20%">
+  <img src="https://github.com/CJGumban/NoteMVVM/blob/mvvm_views_with_di_and_flows/app/sample/notes%20(4).png" width="20%">
   &nbsp; &nbsp; &nbsp; &nbsp;
-  <img src="https://github.com/CJGumban/NoteMVVM/blob/mvvm_views/app/sample/notes%20(5).png" width="20%">
+  <img src="https://github.com/CJGumban/NoteMVVM/blob/mvvm_views_with_di_and_flows/app/sample/notes%20(5).png" width="20%">
   &nbsp; &nbsp; &nbsp; &nbsp;
-  <img src="https://github.com/CJGumban/NoteMVVM/blob/mvvm_views/app/sample/notes%20(6).png" width="20%">
+  <img src="https://github.com/CJGumban/NoteMVVM/blob/mvvm_views_with_di_and_flows/app/sample/notes%20(6).png" width="20%">
 </p>
 
 <p align="center">
-  <img src="https://github.com/CJGumban/NoteMVVM/blob/mvvm_views/app/sample/notes%20(7).png" width="20%">
+  <img src="https://github.com/CJGumban/NoteMVVM/blob/mvvm_views_with_di_and_flows/app/sample/notes%20(7).png" width="20%">
   &nbsp; &nbsp; &nbsp; &nbsp;
-  <img src="https://github.com/CJGumban/NoteMVVM/blob/mvvm_views/app/sample/notes%20(8).png" width="20%">
+  <img src="https://github.com/CJGumban/NoteMVVM/blob/mvvm_views_with_di_and_flows/app/sample/notes%20(8).png" width="20%">
   &nbsp; &nbsp; &nbsp; &nbsp;
-  <img src="https://github.com/CJGumban/NoteMVVM/blob/mvvm_views/app/sample/notes%20(9).png" width="20%">
+  <img src="https://github.com/CJGumban/NoteMVVM/blob/mvvm_views_with_di_and_flows/app/sample/notes%20(9).png" width="20%">
 </p>
 <p align="center">
-  <img src="https://github.com/CJGumban/NoteMVVM/blob/mvvm_views/app/sample/notes%20(10).png" width="20%">
+  <img src="https://github.com/CJGumban/NoteMVVM/blob/mvvm_views_with_di_and_flows/app/sample/notes%20(10).png" width="20%">
   &nbsp; &nbsp; &nbsp; &nbsp;
-  <img src="https://github.com/CJGumban/NoteMVVM/blob/mvvm_views/app/sample/notes%20(11).png" width="20%">
+  <img src="https://github.com/CJGumban/NoteMVVM/blob/mvvm_views_with_di_and_flows/app/sample/notes%20(11).png" width="20%">
 </p>
